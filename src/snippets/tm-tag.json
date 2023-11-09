@@ -1,0 +1,9 @@
+{
+    "App Component Snippets": {
+        "prefix": "tm-app",
+        "body": [
+            "<tm-app ref=\"app\" :options=\"options\" :data=\"data\" :methods=\"methods\">",
+            "</tm-app>"
+        ]
+    }
+}

@@ -2,14 +2,14 @@
   "name": "tmui-helper",
   "displayName": "tmui-helper",
   "description": "TMUI3.0组件库的vscode代码提示插件",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "icon": "./src/tmui.png",
   "engines": {
     "vscode": "^1.54.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://gitcode.net/tmui-helper/tmui-vscode-extension"
+    "url": "git+https://github.com/tmui-helper/tmui-vscode-extension.git"
   },
   "categories": [
     "Other"
@@ -26,6 +26,12 @@
       {
         "command": "tmui-helper.helloWorld",
         "title": "Hello World"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "vue",
+        "path": "./src/snippets/tm-tag.json"
       }
     ]
   },

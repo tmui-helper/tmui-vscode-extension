@@ -1,3 +1,5 @@
+import * as vscode from 'vscode';
+
 /**
  * 首字母大写
  */
@@ -33,6 +35,47 @@ export const getTitle = async (componentName: string): Promise<string> => {
   const doc = await getComponentDoc(componentName);
   const title = doc.match(/(?<=<title>)([\s\S]*?)(?=<\/title>)/g) || [];
   return `${title[0]}`;
+};
+
+/**
+ * 获取当前光标所在的组件标签
+ */
+export const getTag = (document: vscode.TextDocument, position: vscode.Position): string => {
+  let line = position.line;
+  let tag = '';
+
+  while (line >= 0 && !tag) {
+    let lineInfo = document.lineAt(line);
+    let lineText = lineInfo.text.trim();
+    // 本行则获取光标所在的标签
+    if (line === position.line) {
+      lineText = lineText.substring(0, position.character);
+    }
+    let txtArr = lineText.match(/<[^(>/)]+/gim);
+    if (txtArr) {
+      for (let i = (txtArr.length - 1); i >= 0; i--) {
+        if (txtArr[i][0] === '<' && txtArr[i][1] !== '/') {
+            if (txtArr[i].indexOf(' ') !== -1) {
+                tag = txtArr[i].replace(/^<(\S*)(\s.*|\s*)/gi, '$1');
+            } else {
+                tag = txtArr[i].replace(/^<(.*)/gi, '$1');
+            }
+            break;
+        }
+      }
+    }
+    line--;
+  }
+  return tag;
+};
+
+/**
+ * 根据标签名获取组件名，如tm-button获取button
+ * @param tag 标签名
+ * @returns 组件名
+ */
+export const getComponentNameByTagName = (tag: string): string => {
+  return tag.replace('tm-', '');
 };
 
 /**

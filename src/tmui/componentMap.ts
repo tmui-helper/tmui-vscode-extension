@@ -14,11 +14,153 @@ const getComponentDoc = async (componentName: string) => {
 };
 
 /**
+ * 通过cheerio解析文档内容，获取组件的属性参数
+ * @param doc 组件文档内容
+ * @param componentName 组件名
+ */
+const parseComponentProps = (doc: string) => {
+    const cheerio = require('cheerio');
+    const $ = cheerio.load(doc);
+    const props: any[] = [];
+    let $props = $('#参数').next().next().find('tbody tr');
+    // 有些组件的参数表格在下一个兄弟节点
+    if ($props.length === 0) {
+        $props = $('#参数').next().next().next().find('tbody tr');
+    }
+    $props.each((i: any, el: any) => {
+        const $tds = $(el).find('td');
+        let name = $tds.eq(0).html();
+        // 替换class含有VPBadge的span标签，将其替换为markdown的代码块
+        name = name.replace(/<span class="VPBadge .*" .*>.*<\/span>/g, ` \`${$(el).find('td:nth-child(1) span.VPBadge').text()}\``);
+        const type = $tds.eq(1).text();
+        const def = $tds.eq(2).text();
+        const desc = $tds.eq(3).html() || '';
+        props.push({ name, type, default: def, desc });
+    });
+    return props;
+};
+
+/**
+ * 获取组件的参数列表
+ * @param componentName 组件名
+ */
+export const getComponentProps = async (componentName: string) => {
+    const doc = await getComponentDoc(componentName);
+    const props = parseComponentProps(doc);
+    return props;
+};
+
+/**
+ * 通过cheerio解析文档内容，获取组件的事件参数
+ * @param doc 组件文档内容
+ * @param componentName 组件名
+ */
+const parseComponentEvents = (doc: string) => {
+    const cheerio = require('cheerio');
+    const $ = cheerio.load(doc);
+    const events: any[] = [];
+    let $events = $('h2:contains("事件")').next().find('tr');
+    // 有些组件的事件表格在下一个兄弟节点
+    if ($events.length === 0) {
+        $events = $('h2:contains("事件")').next().next().find('tr');
+    }
+    $events.each((i: any, el: any) => {
+        const $tds = $(el).find('td');
+        const name = $tds.eq(0).text();
+        const data = $tds.eq(1).text();
+        const cb = $tds.eq(2).text();
+        const desc = $tds.eq(3).html() || '';
+        events.push({ name, data, cb, desc });
+    });
+    return events;
+};
+
+/**
+ * 获取组件的事件列表
+ * @param componentName 组件名
+ */
+export const getComponentEvents = async (componentName: string) => {
+    const doc = await getComponentDoc(componentName);
+    const events = parseComponentEvents(doc);
+    return events;
+};
+
+/**
+ * 通过cheerio解析文档内容，获取组件的插槽参数
+ * @param doc 组件文档内容
+ * @param componentName 组件名
+ */
+const parseComponentSlots = (doc: string) => {
+    const cheerio = require('cheerio');
+    const $ = cheerio.load(doc);
+    const slots: any[] = [];
+    let $slots = $('h2:contains("slot插槽")').next().find('tr');
+    // 有些组件的插槽表格在下一个兄弟节点
+    if ($slots.length === 0) {
+        $slots = $('h2:contains("slot插槽")').next().next().find('tr');
+    }
+    $slots.each((i: any, el: any) => {
+        const $tds = $(el).find('td');
+        const name = $tds.eq(0).text();
+        const desc = $tds.eq(1).text();
+        const data = $tds.eq(2).text();
+        const type = $tds.eq(3).html() || '';
+        slots.push({ name, desc, data, type });
+    });
+    return slots;
+};
+
+/**
+ * 获取组件的插槽列表
+ * @param componentName 组件名
+ */
+export const getComponentSlots = async (componentName: string) => {
+    const doc = await getComponentDoc(componentName);
+    const slots = parseComponentSlots(doc);
+    return slots;
+};
+
+/**
+ * 通过cheerio解析文档内容，获取组件的ref参数
+ * @param doc 组件文档内容
+ * @param componentName 组件名
+ */
+const parseComponentRefs = (doc: string) => {
+    const cheerio = require('cheerio');
+    const $ = cheerio.load(doc);
+    const refs: any[] = [];
+    let $refs = $('h2:contains("ref方法")').next().find('tr');
+    // 有些组件的ref表格在下一个兄弟节点
+    if ($refs.length === 0) {
+        $refs = $('h2:contains("ref方法")').next().next().find('tr');
+    }
+    $refs.each((i: any, el: any) => {
+        const $tds = $(el).find('td');
+        const name = $tds.eq(0).text();
+        const data = $tds.eq(1).text();
+        const cb = $tds.eq(2).text();
+        const desc = $tds.eq(3).html() || '';
+        refs.push({ name, data, cb, desc });
+    });
+    return refs;
+};
+
+/**
+ * 获取组件的ref列表
+ * @param componentName 组件名
+ */
+export const getComponentRefs = async (componentName: string) => {
+    const doc = await getComponentDoc(componentName);
+    const refs = parseComponentRefs(doc);
+    return refs;
+};
+
+/**
  * 通过cheerio解析文档内容，获取组件的属性、事件、插槽、引用
  * @param doc 组件文档内容
  * @param componentName 组件名
  */
-const parseComponentDoc = (doc: string, componentName: string) => {
+const parseComponentDoc = async (doc: string, componentName: string) => {
     const cheerio = require('cheerio');
     const $ = cheerio.load(doc);
     const componentDesc: ComponentDesc = {
@@ -42,72 +184,22 @@ const parseComponentDoc = (doc: string, componentName: string) => {
             table: [],
         },
     };
-    let $props = $('#参数').next().next().find('tbody tr');
-    // 有些组件的参数表格在下一个兄弟节点
-    if ($props.length === 0) {
-        $props = $('#参数').next().next().next().find('tbody tr');
-    }
-    $props.each((i: any, el: any) => {
-        const $tds = $(el).find('td');
-        let name = $tds.eq(0).html();
-        // 替换class含有VPBadge的span标签，将其替换为markdown的代码块
-        name = name.replace(/<span class="VPBadge .*" .*>.*<\/span>/g, ` \`${$(el).find('td:nth-child(1) span.VPBadge').text()}\``);
-        const type = $tds.eq(1).text();
-        const def = $tds.eq(2).text();
-        const desc = $tds.eq(3).html() || '';
-        componentDesc.props.table.push({ name, type, default: def, desc });
-    });
+    componentDesc.props.table = await getComponentProps(componentName);
     // 获取组件属性的描述
     const propsDesc = $('#参数').next('p').html();
     componentDesc.props.desc = propsDesc || '';
 
-    let $events = $('h2:contains("事件")').next().find('tr');
-    // 有些组件的事件表格在下一个兄弟节点
-    if ($events.length === 0) {
-        $events = $('h2:contains("事件")').next().next().find('tr');
-    }
-    $events.each((i: any, el: any) => {
-        const $tds = $(el).find('td');
-        const name = $tds.eq(0).text();
-        const data = $tds.eq(1).text();
-        const cb = $tds.eq(2).text();
-        const desc = $tds.eq(3).html() || '';
-        componentDesc.events.table.push({ name, data, cb, desc });
-    });
+    componentDesc.events.table = await getComponentEvents(componentName);
     // 获取组件事件的描述
     const eventsDesc = $('h2:contains("事件")').next('p').html();
     componentDesc.events.desc = eventsDesc || '';
 
-    let $slots = $('h2:contains("slot插槽")').next().find('tr');
-    // 有些组件的插槽表格在下一个兄弟节点
-    if ($slots.length === 0) {
-        $slots = $('h2:contains("slot插槽")').next().next().find('tr');
-    }
-    $slots.each((i: any, el: any) => {
-        const $tds = $(el).find('td');
-        const name = $tds.eq(0).text();
-        const desc = $tds.eq(1).text();
-        const data = $tds.eq(2).text();
-        const type = $tds.eq(3).html() || '';
-        componentDesc.slots.table.push({ name, desc, data, type });
-    });
+    componentDesc.slots.table = await getComponentSlots(componentName);
     // 获取组件插槽的描述
     const slotsDesc = $('h2:contains("slot插槽")').next('p').html();
     componentDesc.slots.desc = slotsDesc || '';
 
-    let $refs = $('h2:contains("ref方法")').next().find('tr');
-    // 有些组件的ref表格在下一个兄弟节点
-    if ($refs.length === 0) {
-        $refs = $('h2:contains("ref方法")').next().next().find('tr');
-    }
-    $refs.each((i: any, el: any) => {
-        const $tds = $(el).find('td');
-        const name = $tds.eq(0).text();
-        const data = $tds.eq(1).text();
-        const cb = $tds.eq(2).text();
-        const desc = $tds.eq(3).html() || '';
-        componentDesc.refs.table.push({ name, data, cb, desc });
-    });
+    componentDesc.refs.table = await getComponentRefs(componentName);
     // 获取组件ref的描述
     const refsDesc = $('h2:contains("ref方法")').next('p').html();
     componentDesc.refs.desc = refsDesc || '';
@@ -121,7 +213,7 @@ const parseComponentDoc = (doc: string, componentName: string) => {
  */
 export const getComponentDesc = async (componentName: string) => {
     const doc = await getComponentDoc(componentName);
-    const componentDesc = parseComponentDoc(doc, componentName);
+    const componentDesc = await parseComponentDoc(doc, componentName);
     return componentDesc;
 };
 

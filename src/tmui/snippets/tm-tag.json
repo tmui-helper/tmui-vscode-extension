@@ -1,0 +1,10 @@
+{
+    "tm-app": {
+        "prefix": "tm-app",
+        "body": [
+            "<tm-app ref=\"app\">",
+            "\t<!-- 这里是你的页面代码。 -->",
+            "</tm-app>"
+        ]
+    }
+}

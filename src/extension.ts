@@ -3,9 +3,10 @@ import * as vscode from 'vscode';
 // 引入path模块，提供路径处理功能
 import * as path from 'path';
 // 导入工具类
-import { firstUpperCase } from './utils';
+import { firstUpperCase, getTag, getComponentNameByTagName } from './utils';
 // 定义组件库配置
-import { componentMap, getComponentDesc } from './tmui/componentMap';
+import { componentMap, getComponentDesc, getComponentProps } from './tmui/componentMap';
+import { tmTagSnippets } from './snippets/tm-tag';
 
 const files = ['vue', 'nvue', 'javascript', 'typescript'];
 const LINK_REG = /(?<=<tm-)([\w-]+)/g;
@@ -140,7 +141,11 @@ const provideHover = async (document: vscode.TextDocument, position: vscode.Posi
 const provideCompletionItems = () => {
 	const completionItems: vscode.CompletionItem[] = [];
 	completionItems.push(
-		new vscode.CompletionItem('tm-button', vscode.CompletionItemKind.Field)
+		new vscode.CompletionItem({
+			label: 'tm-app',
+			detail: '  应用节点组件',
+			description: 'tmui-helper提供',
+		}, vscode.CompletionItemKind.Field)
 	);
 
 	return completionItems;
@@ -149,12 +154,86 @@ const provideCompletionItems = () => {
 /**
  * 根据鼠标选中的组件名候选词，回车后自动补全组件的完整标签，如tm-button，自动补全为<tm-button></tm-button>
  */
-const resolveCompletionItem = (item: vscode.CompletionItem) => {
-	const name = item.label;
-	const insertText = new vscode.SnippetString(`<${name}>\t$1</${name}>`);
+const resolveCompletionItem = (item: any) => {
+	const name = item.label.label;
+	const insertText = new vscode.SnippetString(tmTagSnippets.find((item) => item.prefix === name)?.body ?? '');
 	item.insertText = insertText;
 
 	return item;
+};
+
+const provideCompletionItemsAttr = (document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) => {
+	try {
+		const tagName = getTag(document, position);
+		// 获取组件的属性列表
+		// const props = await getComponentProps(tagName);
+		const props = componentMap[tagName].props.table;
+		// 获取组件名
+		const componentName = getComponentNameByTagName(tagName);
+		const completionItems: vscode.CompletionItem[] = [];
+		// 遍历属性列表
+		props.forEach((item) => {
+			// 创建一个CompletionItem，用于提供代码补全的候选项
+			const completionItem = new vscode.CompletionItem(item.name, vscode.CompletionItemKind.Snippet);
+			// 设置候选项的插入文本，即属性名
+			completionItem.label = item.name;
+			// 设置候选项的详情，即属性的类型
+			completionItem.detail = item.type;
+			// 设置候选项的文档，即属性的描述信息
+			completionItem.documentation = new vscode.MarkdownString(item.desc);
+			// 将候选项添加到数组中
+			completionItems.push(completionItem);
+		});
+
+		// 返回所有候选项
+		return completionItems;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+/**
+ * 创建一个用于提供候选项的类，继承自CompletionItemProvider
+ */
+class TMCompletionItemProvider implements vscode.CompletionItemProvider {
+	public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.CompletionItem[] | Thenable<vscode.CompletionItem[]> {
+		// 获取当前光标所在的单词
+		const word = document.getText(document.getWordRangeAtPosition(position));
+		// 如果当前单词是tm-开头的组件名，说明用户正在输入组件名，返回空数组，表示不提供候选项
+		if (word.match(/^tm-/)) {
+			return [];
+		}
+		// 如果当前单词是空格，说明用户可能想输入组件的属性，返回组件的属性列表
+		if (word === ' ') {
+			// 获取当前光标所在的标签
+			const tag = getTag(document, position);
+			// 获取组件的属性列表
+			// const props = await getComponentProps(tag);
+			const props = componentMap[tag].props.table;
+			// 获取组件名
+			const componentName = getComponentNameByTagName(tag);
+			const completionItems: vscode.CompletionItem[] = [];
+			// 遍历属性列表
+			props.forEach((item) => {
+				// 创建一个CompletionItem，用于提供代码补全的候选项
+				const completionItem = new vscode.CompletionItem(item.name, vscode.CompletionItemKind.Snippet);
+				// 设置候选项的插入文本，即属性名
+				completionItem.label = item.name;
+				// 设置候选项的详情，即属性的类型
+				completionItem.detail = item.type;
+				// 设置候选项的文档，即属性的描述信息
+				completionItem.documentation = new vscode.MarkdownString(item.desc);
+				// 将候选项添加到数组中
+				completionItems.push(completionItem);
+			});
+
+			// 返回所有候选项
+			return completionItems;
+		}
+
+		// 返回空数组，表示不提供候选项
+		return [];
+	}
 };
 
 
@@ -163,6 +242,8 @@ const resolveCompletionItem = (item: vscode.CompletionItem) => {
  */
 export async function activate(context: vscode.ExtensionContext) {
 	// 创建一个CompletionProvider，提供代码补全功能
+	const message = 'hello world';
+	vscode.window.showInformationMessage(message);
 	// 获取组件库的配置文件
 	let provider = vscode.languages.registerCompletionItemProvider(
 		// 指定提供自动补全的语言，*表示所有语言，也可以单独指定如：'javascript'，'typescript'等，可在命令面板中输入Configure Language Specific Settings进行设置
@@ -221,11 +302,21 @@ export async function activate(context: vscode.ExtensionContext) {
 		'@'
 	);
 
+	const completionAttr = vscode.languages.registerCompletionItemProvider(
+		files,
+		{
+			provideCompletionItems: provideCompletionItemsAttr
+		},
+		" "
+	);
+
 	// 将CompletionProvider注册到扩展程序上下文中
 	context.subscriptions.push(
 		vscode.languages.registerHoverProvider(files, { provideHover }), 
 		vscode.languages.registerCompletionItemProvider(files, { provideCompletionItems, resolveCompletionItem })
 	);
+
+	context.subscriptions.push(vscode.languages.registerCompletionItemProvider(files, new TMCompletionItemProvider(), ' '));
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "helloworld-sample" is now active!');
@@ -233,7 +324,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('extension.helloWorld', () => {
+	const disposable = vscode.commands.registerCommand('tmui-helper.helloWorld', () => {
 		// The code you place here will be executed every time your command is executed
 
 		// Display a message box to the user
