@@ -1,0 +1,60 @@
+{
+  "name": "tmui-helper",
+  "displayName": "tmui-helper",
+  "description": "TMUI3.0组件库的vscode代码提示插件",
+  "version": "0.0.4",
+  "icon": "./src/tmui.png",
+  "engines": {
+    "vscode": "^1.54.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitcode.net/tmui-helper/tmui-vscode-extension"
+  },
+  "categories": [
+    "Other"
+  ],
+  "publisher": "tmui-helper",
+  "activationEvents": [
+    "onLanguage:vue",
+    "onLanguage:javascript",
+    "onLanguage:typescript"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "tmui-helper.helloWorld",
+        "title": "Hello World"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.3",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.54.0",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
+    "@vscode/test-electron": "^2.3.6",
+    "axios": "^1.6.1",
+    "cheerio": "^1.0.0-rc.12",
+    "eslint": "^8.52.0",
+    "glob": "^10.3.10",
+    "mocha": "^10.2.0",
+    "ts-loader": "^9.5.0",
+    "typescript": "^5.2.2",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
