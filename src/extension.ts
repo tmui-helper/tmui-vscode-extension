@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 // 引入path模块，提供路径处理功能
 import * as path from 'path';
 // 导入工具类
-import { firstUpperCase, getTag, getComponentNameByTagName } from './utils';
+import { firstUpperCase, getTag, getComponentNameByTagName, isInComponentTag, hyphenToHump } from './utils';
 // 定义组件库配置
 import { componentMap, getComponentDesc, getComponentProps } from './tmui/componentMap';
 import { tmTagSnippets } from './snippets/tm-tag';
@@ -17,7 +17,7 @@ const renderComponentMd = async (componentName: string) => {
 	let markdownString = '';
 
 	// 获取组件的文档内容
-	const doc = await getComponentDesc(componentName);
+	const doc = await getComponentDesc(hyphenToHump(componentName));
 
 	// 获取组件的标题
 	// const title = componentMap[componentName].title;
@@ -132,7 +132,8 @@ const provideHover = async (document: vscode.TextDocument, position: vscode.Posi
 		return new vscode.Hover(md);
 	}
 
-	return new vscode.Hover('未找到组件');
+	// 返回null，表示不显示悬停提示
+	return null;
 };
 
 /**
@@ -180,7 +181,11 @@ const provideCompletionItemsAttr = (document: vscode.TextDocument, position: vsc
 			// 设置候选项的详情，即属性的类型
 			completionItem.detail = item.type;
 			// 设置候选项的文档，即属性的描述信息
-			completionItem.documentation = new vscode.MarkdownString(item.desc);
+			const md = new vscode.MarkdownString();
+			md.isTrusted = true;
+			md.supportHtml = true;
+			md.value = item.desc;
+			completionItem.documentation = md;
 			// 将候选项添加到数组中
 			completionItems.push(completionItem);
 		});
@@ -196,40 +201,88 @@ const provideCompletionItemsAttr = (document: vscode.TextDocument, position: vsc
  * 创建一个用于提供候选项的类，继承自CompletionItemProvider
  */
 class TMCompletionItemProvider implements vscode.CompletionItemProvider {
-	public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.CompletionItem[] | Thenable<vscode.CompletionItem[]> {
+	public async provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Promise<vscode.CompletionItem[]> {
+		const completionItems: vscode.CompletionItem[] = [];
+
 		// 获取当前光标所在的单词
 		const word = document.getText(document.getWordRangeAtPosition(position));
-		// 如果当前单词是tm-开头的组件名，说明用户正在输入组件名，返回空数组，表示不提供候选项
-		if (word.match(/^tm-/)) {
-			return [];
-		}
-		// 如果当前单词是空格，说明用户可能想输入组件的属性，返回组件的属性列表
-		if (word === ' ') {
-			// 获取当前光标所在的标签
-			const tag = getTag(document, position);
-			// 获取组件的属性列表
-			// const props = await getComponentProps(tag);
-			const props = componentMap[tag].props.table;
-			// 获取组件名
-			const componentName = getComponentNameByTagName(tag);
-			const completionItems: vscode.CompletionItem[] = [];
-			// 遍历属性列表
+		// 获取当前光标所在的标签
+		const tag = getTag(document, position);
+		// 获取组件名
+		const componentName = getComponentNameByTagName(tag);
+		// 获取组件的属性列表
+		const props = await getComponentProps(firstUpperCase(componentName));
+
+		if (props.length) {
 			props.forEach((item) => {
 				// 创建一个CompletionItem，用于提供代码补全的候选项
-				const completionItem = new vscode.CompletionItem(item.name, vscode.CompletionItemKind.Snippet);
+				const completionItem = new vscode.CompletionItem(item.name, vscode.CompletionItemKind.Field);
+				const labelMd = new vscode.MarkdownString();
+				labelMd.isTrusted = true;
+				labelMd.supportHtml = true;
+				labelMd.value = item.name;
 				// 设置候选项的插入文本，即属性名
-				completionItem.label = item.name;
+				completionItem.label = `${item.name}`;
 				// 设置候选项的详情，即属性的类型
 				completionItem.detail = item.type;
 				// 设置候选项的文档，即属性的描述信息
-				completionItem.documentation = new vscode.MarkdownString(item.desc);
+				const md = new vscode.MarkdownString();
+				md.isTrusted = true;
+				md.supportHtml = true;
+				md.value = item.desc;
+				completionItem.documentation = md;
 				// 将候选项添加到数组中
 				completionItems.push(completionItem);
 			});
-
-			// 返回所有候选项
-			return completionItems;
 		}
+
+		// const completionItem = new vscode.CompletionItem('type', vscode.CompletionItemKind.Field);
+		// completionItem.label = 'type';
+		// completionItem.detail = `  类型${tag}|${isIn}`;
+		// completionItem.documentation = new vscode.MarkdownString('tmui-helper提供');
+
+		// completionItems.push(completionItem);
+
+		// completionItems.push(
+		// 	new vscode.CompletionItem({
+		// 		label: 'type',
+		// 		detail: `  类型${tag}|${isIn}`,
+		// 		description: 'tmui-helper提供',
+		// 	}, vscode.CompletionItemKind.Field),
+		// );
+
+		return completionItems;
+		// 如果当前单词是tm-开头的组件名，说明用户正在输入组件名，返回空数组，表示不提供候选项
+		// if (word.match(/^tm-/)) {
+		// 	return [];
+		// }
+		// // 如果当前单词是空格，说明用户可能想输入组件的属性，返回组件的属性列表
+		// if (word === ' ') {
+		// 	// 获取当前光标所在的标签
+		// 	const tag = getTag(document, position);
+		// 	// 获取组件的属性列表
+		// 	// const props = await getComponentProps(tag);
+		// 	const props = componentMap[tag].props.table;
+		// 	// 获取组件名
+		// 	const componentName = getComponentNameByTagName(tag);
+		// 	const completionItems: vscode.CompletionItem[] = [];
+		// 	// 遍历属性列表
+		// 	props.forEach((item) => {
+		// 		// 创建一个CompletionItem，用于提供代码补全的候选项
+		// 		const completionItem = new vscode.CompletionItem(item.name, vscode.CompletionItemKind.Snippet);
+		// 		// 设置候选项的插入文本，即属性名
+		// 		completionItem.label = item.name;
+		// 		// 设置候选项的详情，即属性的类型
+		// 		completionItem.detail = item.type;
+		// 		// 设置候选项的文档，即属性的描述信息
+		// 		completionItem.documentation = new vscode.MarkdownString(item.desc);
+		// 		// 将候选项添加到数组中
+		// 		completionItems.push(completionItem);
+		// 	});
+
+		// 	// 返回所有候选项
+		// 	return completionItems;
+		// }
 
 		// 返回空数组，表示不提供候选项
 		return [];

@@ -4,11 +4,94 @@ import axios from 'axios';
 const LINK_COMPONENT_COMMON_PROPS = 'https://tmui.design/spec/组件公共样式.html';
 
 /**
+ * 获取组件名
+ * @param componentName 组件名
+ */
+export const getComponentName = (componentName: string) => {
+    // 部分组件名需要特殊处理
+    switch (componentName) {
+        case 'GridItem':
+            componentName = 'Grid';
+            break;
+        case 'Col':
+            componentName = 'Row';
+            break;
+        case 'CollapseItem':
+            componentName = 'Collapse';
+            break;
+        case 'DescriptionsItem':
+            componentName = 'Descriptions';
+            break;
+        case 'ImageGroup':
+            componentName = 'Image';
+            break;
+        case 'IndexesItem':
+            componentName = 'Indexes';
+            break;
+        case 'TabsPane':
+            componentName = 'Tabs';
+            break;
+        case 'TimelineItem':
+            componentName = 'Timeline';
+            break;
+        case 'WaterfallItem':
+            componentName = 'Waterfall';
+            break;
+        case 'CheckboxGroup':
+            componentName = 'Checkbox';
+            break;
+        case 'CalendarView':
+            componentName = 'Calendar';
+            break;
+        case 'CityCascader':
+            componentName = 'City';
+            break;
+        case 'CityPicker':
+            componentName = 'City';
+            break;
+        case 'FormItem':
+            componentName = 'Form';
+            break;
+        case 'RadioGroup':
+            componentName = 'Radio';
+            break;
+        case 'TimeView':
+            componentName = 'Time';
+            break;
+        case 'TimePicker':
+            componentName = 'Time';
+            break;
+        case 'SkeletonLine':
+            componentName = 'Skeleton';
+            break;
+        case 'StepsItem':
+            componentName = 'Steps';
+            break;
+        case 'TabbarItem':
+            componentName = 'Tabbar';
+            break;
+        case 'FilterMenuItem':
+            componentName = 'FilterMenu';
+            break;
+        default:
+            componentName = componentName;
+    };
+    return componentName;
+};
+
+/**
+ * 获取组件链接
+ */
+export const getComponentLink = (componentName: string) => {
+    return `https://tmui.design/com/${getComponentName(componentName)}.html`;
+};
+
+/**
  * 通过axios获取组件的文档内容
  * @param componentName 组件名
  */
 const getComponentDoc = async (componentName: string) => {
-    const url = `https://tmui.design/com/${componentName}.html`;
+    const url = getComponentLink(componentName);
     const res = await axios.get(url);
     return res.data;
 };

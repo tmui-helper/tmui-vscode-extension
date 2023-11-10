@@ -8,6 +8,14 @@ export const firstUpperCase = (str: string): string => {
 };
 
 /**
+ * 中划线转大写驼峰，如tm-button转为TmButton，tm-button-group转为TmButtonGroup，如果没有中划线则首字母大写
+ * @param str string
+ */
+export const hyphenToHump = (str: string): string => {
+  return str.replace(/-(\w)/g, (all, letter) => letter.toUpperCase());
+};
+
+/**
  * 字符串字母全部小写
  */
 export const allLowerCase = (str: string): string => {
@@ -35,6 +43,29 @@ export const getTitle = async (componentName: string): Promise<string> => {
   const doc = await getComponentDoc(componentName);
   const title = doc.match(/(?<=<title>)([\s\S]*?)(?=<\/title>)/g) || [];
   return `${title[0]}`;
+};
+
+/**
+ * 判断当前光标是否在组件标签内
+ * @param document 文档对象
+ * @param position 光标位置
+ */
+export const isInComponentTag = (
+  document: vscode.TextDocument,
+  position: vscode.Position
+): boolean => {
+  // 判断当前光标是否在标签内
+  const lineInfo = document.lineAt(position.line);
+  const lineText = lineInfo.text.trim();
+  const txtArr = lineText.match(/<[^(>/)]+/gim);
+  if (txtArr) {
+    for (let i = (txtArr.length - 1); i >= 0; i--) {
+      if (txtArr[i][0] === '<' && txtArr[i][1] !== '/') {
+        return true;
+      }
+    }
+  }
+  return false;
 };
 
 /**
