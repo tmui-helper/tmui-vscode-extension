@@ -110,6 +110,74 @@ export const getComponentNameByTagName = (tag: string): string => {
 };
 
 /**
+ * 根据属性名和属性类型拼接vue组件的属性，如果属性名为a，属性类型为string，则拼接为a，如果属性名为a，属性类型不为string，则拼接为:a
+ * @param propName 属性名
+ * @param propType 属性类型
+ * @returns vue组件的属性
+ */
+export const getVueProp = (propName: string, propType: string): string => {
+  return propType === 'string' ? propName : `:${propName}`;
+};
+
+/**
+ * 判断当前光标是否在组件的属性内
+ * @param document 文档对象
+ * @param position 光标位置
+ * @returns 是否在组件的属性内
+ */
+export const isInComponentProp = (
+  document: vscode.TextDocument,
+  position: vscode.Position
+): boolean => {
+  // 判断当前光标是否在标签内
+  const lineInfo = document.lineAt(position.line);
+  const lineText = lineInfo.text.trim();
+  const txtArr = lineText.match(/<[^(>/)]+/gim);
+  if (txtArr) {
+    for (let i = (txtArr.length - 1); i >= 0; i--) {
+      if (txtArr[i][0] === '<' && txtArr[i][1] !== '/') {
+        const tag = txtArr[i].replace(/^<(\S*)(\s.*|\s*)/gi, '$1');
+        const componentName = getComponentNameByTagName(tag);
+        const propReg = new RegExp(`\\s${componentName}\\.\\S*="\\S*"$`);
+        if (propReg.test(lineText)) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+};
+
+/**
+ * 短横线转驼峰，如tm-button转为tmButton，tm-button-group转为tmButtonGroup，如果没有中划线则首字母小写
+ * @param str
+ * @returns
+ */
+export const camelCase = (str: string): string => {
+  return str.replace(/-(\w)/g, (all, letter) => letter.toUpperCase());
+};
+
+/**
+ * 转换为大驼峰，如tm-button转为TmButton，tm-button-group转为TmButtonGroup，如果没有中划线则首字母大写
+ * @param str 
+ * @returns 
+ */
+export const bigCamelCase = (str: string): string => {
+  return camelCase(str).replace(/^\S/, (s) => s.toUpperCase());
+};
+
+/**
+ * 转中横线，如tmButton转为tm-button，tmButtonGroup转为tm-button-group，如果没有中划线则首字母小写
+ * @param str
+ * @returns
+ */
+export const kebabCase = (str: string): string => {
+  return str.replace(/([A-Z])/g, '-$1').trim().split(' ').join('-').toLowerCase();
+};
+
+
+
+/**
  * 根据组件名爬取https://tmui.design官网组件库的组件信息，生成组件库配置
  * @param componentName 组件名
  * @returns 组件库配置
