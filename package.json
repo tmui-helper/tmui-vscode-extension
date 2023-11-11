@@ -3,7 +3,7 @@
   "displayName": "tmui-helper",
   "description": "TMUI3.0组件库的vscode代码提示插件",
   "version": "0.0.3",
-  "icon": "./src/tmui.png",
+  "icon": "./src/assets/tmui.png",
   "engines": {
     "vscode": "^1.54.0"
   },
