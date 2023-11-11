@@ -1,6 +1,6 @@
 // 导入vscode模块
 import * as vscode from 'vscode';
-import { firstUpperCase, getTag, getComponentNameByTagName, hyphenToHump } from './utils';
+import { firstUpperCase, getTag, getComponentNameByTagName } from './utils';
 import { getComponentDesc, getComponentProps } from './tmui/componentMap';
 import { LANGUAGE_IDS } from './constant';
 

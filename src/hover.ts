@@ -1,8 +1,8 @@
 // 导入vscode模块
 import * as vscode from 'vscode';
 import { bigCamelCase } from './utils';
-import { getComponentDesc } from './tmui/componentMap';
-import { LINK_REG, LANGUAGE_IDS } from './constant';
+import { getComponentDesc, getComponentLink } from './tmui/componentMap';
+import { LINK_REG, LANGUAGE_IDS, LINK_COMPONENT_COMMON_PROPS } from './constant';
 
 // 定义输出组件Markdown文档的方法
 export const renderComponentMd = async (componentName: string) => {
@@ -42,11 +42,11 @@ export const renderComponentMd = async (componentName: string) => {
 	// 组装组件的标题
 	markdownString += `## ${title}\n\n`;
 	// 组装组件的描述
-	markdownString += `${desc}\n\n`;
+	markdownString += `${desc}  [文档原文](${getComponentLink(bigCamelCase(componentName))})\n\n`;
 	// 组装组件的属性列表
 	markdownString += `### 属性\n\n`;
 	// 组装组件的属性描述
-	markdownString += `${propsDesc}\n\n`;
+	markdownString += `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})\n\n`;
 	// 判断组件是否有属性
 	if (props.length) {
 		// 组装组件的属性列表

@@ -11,4 +11,4 @@ export const LANGUAGE_IDS = ['vue', 'javascript', 'typescript', 'javascriptreact
 /**
  * 定义组件公共样式的链接
  */
-export const LINK_COMPONENT_COMMON_PROPS = 'https://tmui.design/spec/组件公共样式.html';
+export const LINK_COMPONENT_COMMON_PROPS = encodeURI('https://tmui.design/spec/组件公共样式.html');
