@@ -3,6 +3,8 @@
  */
 export const LINK_REG = /(?<=<tm-)([\w-]+)/g;
 
+export const TAG_REG = /(?:<(tm-[\w-]+)[^>/]*)|(?:<(TM[\w-]+)[^>/]*)/g;
+
 /**
  * 定义激活的语言类型
  */

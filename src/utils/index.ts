@@ -175,6 +175,14 @@ export const kebabCase = (str: string): string => {
   return str.replace(/([A-Z])/g, '-$1').trim().split(' ').join('-').toLowerCase();
 };
 
+/**
+ * 判断是否为字符串
+ * @param str
+ */
+export const isString = (str: any): boolean => {
+  return typeof str === 'string';
+};
+
 
 
 /**

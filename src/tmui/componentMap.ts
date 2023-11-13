@@ -124,12 +124,43 @@ const parseComponentProps = (doc: string) => {
 };
 
 /**
+ * 通过cheerio解析文档内容，获取组件的公共属性参数
+ * @param doc 组件文档内容
+ */
+const parseComponentCommonProps = (doc: string) => {
+    const cheerio = require('cheerio');
+    const $ = cheerio.load(doc);
+    const props: any[] = [];
+    let $props = $('#组件参数说明').next().find('tbody tr');
+    $props.each((i: any, el: any) => {
+        const $tds = $(el).find('td');
+        let name = $tds.eq(0).html();
+        // 替换class含有VPBadge的span标签，将其替换为markdown的代码块
+        name = name.replace(/<span class="VPBadge .*" .*>.*<\/span>/g, ` \`${$(el).find('td:nth-child(1) span.VPBadge').text()}\``);
+        const type = $tds.eq(1).text();
+        const def = $tds.eq(2).text();
+        const desc = $tds.eq(3).html() || '';
+        props.push({ name, type, default: def, desc });
+    });
+    return props;
+};
+
+/**
  * 获取组件的参数列表
  * @param componentName 组件名
  */
 export const getComponentProps = async (componentName: string) => {
     const doc = await getComponentDoc(componentName);
     const props = parseComponentProps(doc);
+    return props;
+};
+
+/**
+ * 获取组件的公共参数列表
+ */
+export const getComponentCommonProps = async () => {
+    const { data } = await axios.get(LINK_COMPONENT_COMMON_PROPS);
+    const props = parseComponentCommonProps(data);
     return props;
 };
 
