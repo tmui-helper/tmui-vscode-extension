@@ -3,9 +3,11 @@ interface PropsTbale {
     type: string;
     default: string | number;
     desc: string;
+    minVersion?: string;
 };
 
 interface Props {
+    title?: string;
     desc: string;
     table: PropsTbale[];
 };
@@ -27,6 +29,7 @@ interface SlotsTable {
     data: string;
     type: string;
     desc: string;
+    minVersion?: string;
 };
 
 interface Slots {
@@ -39,6 +42,7 @@ interface RefsTable {
     data: string;
     cb: string;
     desc: string;
+    minVersion?: string;
 };
 
 interface Refs {
@@ -50,8 +54,10 @@ export interface ComponentDesc {
     name: string;
     title: string;
     desc: string;
-    props: Props;
+    props?: Props;
+    propsList?: Props[];
     events: Events;
     slots: Slots;
     refs: Refs;
+    doc?: string;
 };
