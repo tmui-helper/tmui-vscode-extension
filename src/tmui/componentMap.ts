@@ -2354,5 +2354,503 @@ export const componentMap: Record<string, ComponentDesc> = {
             desc: '无',
             table: [],
         },
+    },
+    'comment': {
+        name: 'comment',
+        title: '评论 Comment',
+        desc: '评论组件，用于展示评论列表，或者评论输入框。',
+        doc: 'https://tmui.design/com/Comment.html',
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'shadow',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '卡片投影，0-26',
+                    },
+                    {
+                        name: 'round',
+                        type: 'number',
+                        default: '`4`',
+                        desc: '卡片圆角，0-26',
+                    },
+                    {
+                        name: 'width',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '宽度，单位rpx',
+                    },
+                    {
+                        name: 'height',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '高度，单位rpx',
+                    },
+                    {
+                        name: 'border',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '边框',
+                    },
+                    {
+                        name: 'margin',
+                        type: 'number[]',
+                        default: '`[32,8]`',
+                        desc: '外间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'padding',
+                        type: 'number[]',
+                        default: '`[24,24]`',
+                        desc: '内间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'transprent',
+                        type: 'boolean|string',
+                        default: '`false`',
+                        desc: '-',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`white`',
+                        desc: '背景主题颜色名称',
+                    },
+                    {
+                        name: 'border-bottom',
+                        type: 'boolean|string',
+                        default: '`false`',
+                        desc: '是否显示底部的边线',
+                    },
+                    {
+                        name: 'author',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '名称',
+                    },
+                    {
+                        name: 'author-font-size',
+                        type: 'number',
+                        default: '`26`',
+                        desc: 'author字体大小,默认26',
+                    },
+                    {
+                        name: 'author-color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: 'author主题色',
+                    },
+                    {
+                        name: 'avatar',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '头像',
+                    },
+                    {
+                        name: 'content',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '内容',
+                    },
+                    {
+                        name: 'time',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '时间',
+                    },
+                    {
+                        name: 'align',
+                        type: 'string',
+                        default: '`right`',
+                        desc: '时间和下面的操作按钮是靠左还是靠右：right,left',
+                    },
+                    {
+                        name: 'auto-format-time',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '是否格式化时间标签。',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'avatar-click',
+                    data: '-',
+                    cb: '-',
+                    desc: '点击头像时触发',
+                },
+                {
+                    name: 'author-click',
+                    data: '-',
+                    cb: '-',
+                    desc: '点击名称时触发',
+                },
+                {
+                    name: 'time-click',
+                    data: '-',
+                    cb: '-',
+                    desc: '点击时间时触发',
+                },
+                {
+                    name: 'content-click',
+                    data: '-',
+                    cb: '-',
+                    desc: '点击内容时触发',
+                }
+            ],
+        },
+        slots: {
+            desc: '',
+            table: [
+                {
+                    name: 'author',
+                    data: '-',
+                    type: '-',
+                    desc: '评论的人',
+                },
+                {
+                    name: 'time',
+                    data: '-',
+                    type: '-',
+                    desc: '评论的时间',
+                },
+                {
+                    name: 'content',
+                    data: '-',
+                    type: '-',
+                    desc: '评论的内容正文',
+                },
+                {
+                    name: 'actions',
+                    data: '-',
+                    type: '-',
+                    desc: '评论的底部插槽，默认是空内容，用于自定底部一些其它布局，比如输入框，先点赞按钮这些或者其它操作按钮等。',
+                },
+                {
+                    name: 'default',
+                    data: '-',
+                    type: '-',
+                    desc: '默认插槽，主要，可以放置任意组件和元素，可以用来嵌套评论组件，把评论组件放置默认插槽中形成嵌套效果。',
+                }
+            ],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'cell': {
+        name: 'cell',
+        title: '单元格 Cell',
+        desc: '常用于列表',
+        doc: 'https://tmui.design/com/Cell.html',
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'shadow',
+                        type: 'number|string',
+                        default: '`0`',
+                        desc: '投影，0-25',
+                    },
+                    {
+                        name: 'round',
+                        type: 'number|string',
+                        default: '`0`',
+                        desc: '圆角，0-25，单位rpx',
+                    },
+                    {
+                        name: 'margin',
+                        type: 'number[]',
+                        default: '`[32,0]`',
+                        desc: '外间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'padding',
+                        type: 'number[]',
+                        default: '`[24,24]`',
+                        desc: '内间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'height',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '高度，单位rpx',
+                    },
+                    {
+                        name: 'transprent',
+                        type: 'boolean|string',
+                        default: '`false`',
+                        desc: '是否透明',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`white`',
+                        desc: '单元格背景色',
+                    },
+                    {
+                        name: 'title',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '标题',
+                    },
+                    {
+                        name: 'title-color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '默认为空，采用自动配色（根据主题）',
+                    },
+                    {
+                        name: 'title-font-size',
+                        type: 'number',
+                        default: '`28`',
+                        desc: '标题字体大小',
+                    },
+                    {
+                        name: 'label',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '标题下方的描述',
+                    },
+                    {
+                        name: 'label-color',
+                        type: 'string',
+                        default: '`grey`',
+                        desc: '标题下方文字的颜色',
+                    },
+                    {
+                        name: 'label-font-size',
+                        type: 'number',
+                        default: '`22`',
+                        desc: '标题下方文字的字体大小',
+                    },
+                    {
+                        name: 'right-text',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '右边的文字',
+                    },
+                    {
+                        name: 'right-text-size',
+                        type: 'number',
+                        default: '`24`',
+                        desc: '右边的文字大小',
+                        minVersion: 'v3.0.75+'
+                    },
+                    {
+                        name: 'right-icon',
+                        type: 'string',
+                        default: '`tmicon-angle-right`',
+                        desc: '右边的图标',
+                    },
+                    {
+                        name: 'right-color',
+                        type: 'string',
+                        default: '`grey`',
+                        desc: '右边的文字颜色',
+                    },
+                    {
+                        name: 'show-avatar',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否显示头像',
+                    },
+                    {
+                        name: 'avatar',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '头像路径',
+                    },
+                    {
+                        name: 'avatar-size',
+                        type: 'number',
+                        default: '`60`',
+                        desc: '头像大小',
+                    },
+                    {
+                        name: 'avatar-round',
+                        type: 'number',
+                        default: '`10`',
+                        desc: '头像圆角',
+                    },
+                    {
+                        name: 'border',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '边线宽度',
+                    },
+                    {
+                        name: 'border-direction',
+                        type: 'string',
+                        default: '`bottom`',
+                        desc: '边线方向，可选：top,bottom,left,right',
+                    },
+                    {
+                        name: 'bottom-border',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否显示下边线',
+                    },
+                    {
+                        name: 'url',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '当有链接地址时，将打开链接',
+                    },
+                    {
+                        name: 'dark-bg-color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '有时自动的背景，可能不是你想要暗黑背景，此时可以使用此参数，强制使用背景色',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'click',
+                    data: '-',
+                    cb: '-',
+                    desc: '点击组件时触发',
+                }
+            ],
+        },
+        slots: {
+            desc: '',
+            table: [
+                {
+                    name: 'avatar',
+                    data: '-',
+                    type: '-',
+                    desc: '自定义头像',
+                },
+                {
+                    name: 'title',
+                    data: '-',
+                    type: '-',
+                    desc: '自定义左侧标题部分的内容',
+                },
+                {
+                    name: 'label',
+                    data: '-',
+                    type: '-',
+                    desc: '自定义label内容',
+                },
+                {
+                    name: 'rightText',
+                    data: '-',
+                    type: '-',
+                    desc: '自定义右边文字内容',
+                },
+                {
+                    name: 'right',
+                    data: '-',
+                    type: '-',
+                    desc: '自定义右图标内容',
+                }
+            ],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'countdown': {
+        name: 'countdown',
+        title: '倒计时 Countdown',
+        desc: '常用于计时，短信验证码倒计时，活动倒计时等。',
+        doc: 'https://tmui.design/com/Countdown.html',
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'time',
+                        type: 'number',
+                        default: '`10 * 1000`',
+                        desc: '单位毫秒，倒计时的总时长',
+                    },
+                    {
+                        name: 'format',
+                        type: 'string',
+                        default: '`{DD}天{HH}小时{MM}分{SS}秒{MS}毫秒`',
+                        desc: '格式。如果只想要秒：SS秒，注意如果当你的formatType设定某值时，里面只能读取到你设定的值。'
+                    },
+                    {
+                        name: 'auto-start',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '是否自动开始倒计时',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '文字颜色',
+                    },
+                    {
+                        name: 'format-type',
+                        type: 'string',
+                        default: '`HH`',
+                        desc: '格式类型，可选：DD,HH,MM,SS,MS，具体说明见下方',
+                    }
+                ],
+            },
+            {
+                title: 'FormatType 说明',
+                desc: '+ 倒计时格式的类型，设定下面的值时，倒计时功能不会进位，而是以指定的值进行倒计时。\n+ 比如分，你设置为MM,那么你倒计时如果是200分钟，就从200开始倒计时。而不会进位到小时。\n+"DD"|"HH"|"MM"|"SS"|"MS"|""\n+天|时|分|秒|毫秒',
+                table: [],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'start',
+                    data: '-',
+                    cb: '-',
+                    desc: '开始或者继续。',
+                },
+                {
+                    name: 'end',
+                    data: '-',
+                    cb: '-',
+                    desc: '停止，直接结束。',
+                },
+                {
+                    name: 'change',
+                    data: '-',
+                    cb: '-',
+                    desc: '时间变化时触发。',
+                }
+            ],
+        },
+        slots: {
+            desc: '',
+            table: [
+                {
+                    name: 'default',
+                    data: '数据',
+                    type: 'timeData',
+                    desc: '倒计时数据',
+                }
+            ],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
     }
 };
