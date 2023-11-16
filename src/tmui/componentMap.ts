@@ -1,5 +1,6 @@
 import { ComponentDesc } from './componentDesc';
 import axios from 'axios';
+import { COMPALICITY } from './constant';
 
 const LINK_COMPONENT_COMMON_PROPS = 'https://tmui.design/spec/组件公共样式.html';
 
@@ -336,11 +337,29 @@ export const componentMap: Record<string, ComponentDesc> = {
         name: 'app',
         title: '应用节点 App',
         desc: '这是所有页面的根节点，请务必在创建页面时把它作为页面的根节点。以后可扩展性非常强。',
+        demoCode: () => {
+            let markdownString = '';
+
+            markdownString += `\`\`\`vue\n`;
+            markdownString += `<template>\n`;
+            markdownString += `\t<tm-app ref="app">\n`;
+            markdownString += `\t\t<!-- 这里是你的页面代码。 -->\n`;
+            markdownString += `\t</tm-app>\n`;
+            markdownString += `</template>\n\n`;
+            markdownString += `<script lang="ts" setup>\n`;
+            markdownString += `import tmApp from "@/tmui/components/tm-app/tm-app.vue"\n`;
+            markdownString += `//你的代码...\n`;
+            markdownString += `</script>\n\n`;
+            markdownString += `\`\`\`\n\n`;
+
+            return markdownString;
+        },
         doc: 'https://tmui.design/com/App.html',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
-                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})\n \> #### 关于tabBar\ntabbar\`v3.0.75+\`开始已经删除该属性。转而读取你的项目 目录下的pages.json的配置，如果未配置将使用框架自带的配置颜色。因为该属性只对原生的tabBar起到切换主题作用。 因此如果你使用自带的tabBar组件将不受影响。`,
                 table: [
                     {
                         name: 'theme',
@@ -369,13 +388,13 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'blur',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`false`',
                         desc: '模糊背景(未开放)',
                     },
                     {
                         name: 'navbar',
-                        type: 'Object',
+                        type: 'object',
                         default: "`{background: '#ffffff',fontColor: '#000000'}`",
                         desc: '标题导航配色(可选)，这里默认是读取你page.json中的配置，如果你没有配置，这里才会起作用。',
                     },
@@ -430,13 +449,141 @@ export const componentMap: Record<string, ComponentDesc> = {
                     desc: '设定暗黑',
                 },
             ],
+            demoCode: () => {
+                let markdownString = '';
+
+                markdownString += `\`\`\`ts\n`;
+                
+                markdownString += `import {getCurrentInstance} from "vue"\n`;
+                markdownString += `import tmApp from "@/tmui/components/tm-app/tm-app.vue"\n`;
+                markdownString += `const {proxy} = getCurrentInstance();\n`;
+                markdownString += `//设置红色主题\n`;
+                markdownString += `proxy.$refs.app.setTheme("red")\n`;
+                markdownString += `//设置当前为暗黑效果\n`;
+                markdownString += `proxy.$refs.app.setDark(true)\n`;
+                markdownString += `\`\`\`\n\n`;
+
+                return markdownString;
+            },
         },
     },
     'button': {
         name: 'button',
         title: '按钮 Button',
         desc: '常用组件按钮。',
+        demoCode: () => {
+            let markdownString = '';
+
+            markdownString += `\`\`\`vue\n`;
+            markdownString += `<template>\n`;
+            markdownString += `\t<tm-app>\n`;
+            markdownString += `\t\t<tm-sheet :margin="[32, 32, 32, 0]">\n`;
+            markdownString += `\t\t\t<tm-text :font-size="24" _class="text-weight-b" label="基本示例"></tm-text>\n`;
+            markdownString += `\t\t\t<tm-divider></tm-divider>\n`;
+            markdownString += `\t\t\t<view class="flex flex-row flex-wrap">\n`;
+            markdownString += `\t\t\t\t<tm-button color="pink" :margin="[10]" :shadow="0" size="large" label="按钮"> </tm-button>\n`;
+            markdownString += `\t\t\t\t<tm-button :margin="[10]" :shadow="0" size="normal" label="按钮"></tm-button>\n`;
+            markdownString += `\t\t\t\t<tm-button :margin="[10]" size="small" :shadow="0" label="按钮"></tm-button>\n`;
+            markdownString += `\t\t\t\t<tm-button :margin="[10]" size="mini" :shadow="0" label="按钮"></tm-button>\n`;
+            markdownString += `\n`;
+            markdownString += `\t\t\t\t<tm-button :margin="[10]" :shadow="0" text size="normal" outlined label="浅边框"></tm-button>\n`;
+            markdownString += `\t\t\t\t<tm-button :margin="[10]" :shadow="0" :border="6" outlined size="normal" label="深边框"></tm-button>\n`;
+            markdownString += `\t\t\t\t<tm-button :margin="[10]" transprent text :shadow="0" size="normal" label="透明背景"></tm-button>\n`;
+            markdownString += `\t\t\t</view>\n`;
+            markdownString += `\t\t\t<tm-button block label="block"></tm-button>\n`;
+            markdownString += `\t\t</tm-sheet>\n`;
+            // markdownString += `\t\t<tm-sheet>\n`;
+            // markdownString += `\t\t\t<tm-text :font-size="24" _class="text-weight-b" label="带图标"></tm-text>\n`;
+            // markdownString += `\t\t\t<tm-divider></tm-divider>\n`;
+            // markdownString += `\t\t\t<view class="flex flex-row flex-wrap">\n`;
+            // markdownString += `\t\t\t\t<tm-button icon="tmicon-tongzhifill" size="normal" label="按钮"></tm-button>\n`;
+            // markdownString += `\t\t\t\t<tm-button\n`;
+            // markdownString += `\t\t\t\t\tcolor="red"\n`;
+            // markdownString += `\t\t\t\t\ticon="tmicon-account"\n`;
+            // markdownString += `\t\t\t\t\t:width="86"\n`;
+            // markdownString += `\t\t\t\t\t:round="10"\n`;
+            // markdownString += `\t\t\t\t\t:height="86"\n`;
+            // markdownString += `\t\t\t\t\t:fontSize="40"\n`;
+            // markdownString += `\t\t\t\t\t:margin="[10]"\n`;
+            // markdownString += `\t\t\t\t\t:shadow="0"\n`;
+            // markdownString += `\t\t\t\t\tsize="normal"\n`;
+            // markdownString += `\t\t\t\t></tm-button>\n`;
+            // markdownString += `\t\t\t\t<tm-button\n`;
+            // markdownString += `\t\t\t\t\tcolor="green"\n`;
+            // markdownString += `\t\t\t\t\ticon="tmicon-account"\n`;
+            // markdownString += `\t\t\t\t\t:width="86"\n`;
+            // markdownString += `\t\t\t\t\t:round="10"\n`;
+            // markdownString += `\t\t\t\t\t:height="86"\n`;
+            // markdownString += `\t\t\t\t\t:fontSize="40"\n`;
+            // markdownString += `\t\t\t\t\t:margin="[10]"\n`;
+            // markdownString += `\t\t\t\t\t:shadow="0"\n`;
+            // markdownString += `\t\t\t\t\tsize="normal"\n`;
+            // markdownString += `\t\t\t\t></tm-button>\n`;
+            // markdownString += `\t\t\t\t<tm-button\n`;
+            // markdownString += `\t\t\t\t\ticon="tmicon-account"\n`;
+            // markdownString += `\t\t\t\t\tcolor="pink"\n`;
+            // markdownString += `\t\t\t\t\t:margin="[10]"\n`;
+            // markdownString += `\t\t\t\t\t:shadow="0"\n`;
+            // markdownString += `\t\t\t\t\ttext\n`;
+            // markdownString += `\t\t\t\t\t:border="2"\n`;
+            // markdownString += `\t\t\t\t\tborderStyle="dashed"\n`;
+            // markdownString += `\t\t\t\t\tsize="normal"\n`;
+            // markdownString += `\t\t\t\t\tlabel="按钮"\n`;
+            // markdownString += `\t\t\t\t></tm-button>\n`;
+            // markdownString += `\t\t\t</view>\n`;
+            // markdownString += `\t\t</tm-sheet>\n`;
+            markdownString += `\t\t<tm-sheet>\n`;
+            markdownString += `\t\t\t<tm-text :font-size="24" _class="text-weight-b" label="带图标"></tm-text>\n`;
+            markdownString += `\t\t\t<tm-divider></tm-divider>\n`;
+            markdownString += `\t\t\t<view class="flex flex-row flex-wrap">\n`;
+            markdownString += `\t\t\t\t<tm-button :margin="[0]" disabled icon="tmicon-tongzhifill" size="normal" label="禁用"></tm-button>\n`;
+            markdownString += `\t\t\t\t<tm-button :margin="[24, 0]" loading icon="tmicon-tongzhifill" size="normal" label="加载中"></tm-button>\n`;
+            markdownString += `\t\t\t\t<tm-button :margin="[0, 24]" icon="tmicon-tongzhifill" size="normal" label="正常"></tm-button>\n`;
+            markdownString += `\t\t\t</view>\n`;
+            markdownString += `\t\t</tm-sheet>\n`;
+            markdownString += `\t\t<tm-sheet :margin="[32, 0, 32, 32]">\n`;
+            markdownString += `\t\t\t<tm-text :font-size="24" _class="text-weight-b" label="渐变样式,更多属性见文档"></tm-text>\n`;
+            markdownString += `\t\t\t<tm-divider></tm-divider>\n`;
+            markdownString += `\t\t\t<tm-button\n`;
+            markdownString += `\t\t\t\t:linear-color="['#ea3c2d', '#ff9d14']"\n`;
+            markdownString += `\t\t\t\tcolor="orange"\n`;
+            markdownString += `\t\t\t\tfont-color="white"\n`;
+            markdownString += `\t\t\t\tlinear="left"\n`;
+            markdownString += `\t\t\t\tblock\n`;
+            markdownString += `\t\t\t\tlabel="自定义渐变背景"\n`;
+            markdownString += `\t\t\t></tm-button>\n`;
+            markdownString += `\t\t\t<tm-button linear="right" block label="light"></tm-button>\n`;
+            markdownString += `\t\t\t<tm-button linear="right" linearDeep="dark" block label="dark"></tm-button>\n`;
+            markdownString += `\t\t\t<tm-button linear="right" linearDeep="accent" block label="accent"></tm-button>\n`;
+            markdownString += `\t\t</tm-sheet>\n`;
+            markdownString += `\t</tm-app>\n`;
+            markdownString += `</template>\n\n`;
+            markdownString += `<script lang="ts" setup>\n`;
+            markdownString += `import {ref} from "vue"\n`;
+            markdownString += `import { onShow, onLoad } from '@dcloudio/uni-app'\n`;
+            markdownString += `import { useTmpiniaStore } from '@/tmui/tool/lib/tmpinia'\n`;
+            markdownString += `\n`;
+            markdownString += `import tmApp from '../../tmui/components/tm-app/tm-app.vue'\n`;
+            markdownString += `import tmSheet from '@/tmui/components/tm-sheet/tm-sheet.vue'\n`;
+            markdownString += `import tmText from '@/tmui/components/tm-text/tm-text.vue'\n`;
+            markdownString += `import tmButton from '../../tmui/components/tm-button/tm-button.vue'\n`;
+            markdownString += `import tmDivider from '../../tmui/components/tm-divider/tm-divider.vue'\n`;
+            markdownString += `import tmRow from '../../tmui/components/tm-row/tm-row.vue'\n`;
+            markdownString += `import tmCol from '../../tmui/components/tm-col/tm-col.vue'\n\n`;
+            markdownString += `const store = useTmpiniaStore()\n\n`;
+            markdownString += `// setTimeout(()=>{\n`;
+            markdownString += `//     if(typeof store.tmuiConfig.themeConfig?.component?.button?.round !='undefined'){\n`;
+            markdownString += `//         store.tmuiConfig.themeConfig.component.button.round = 24\n`;
+            markdownString += `//         console.log(store.tmuiConfig.themeConfig)\n`;
+            markdownString += `//     }\n`;
+            markdownString += `// },2000)\n`;
+            markdownString += `</script>\n\n`;
+            markdownString += `\`\`\`\n\n`;
+
+            return markdownString;
+        },
         doc: 'https://tmui.design/com/Button.html',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -450,7 +597,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'follow-theme',
-                        type: '`boolean`',
+                        type: 'boolean',
                         default: '`true`',
                         desc: '是否跟随全局主题',
                     },
@@ -555,43 +702,43 @@ export const componentMap: Record<string, ComponentDesc> = {
                         name: 'open-type',
                         type: 'string',
                         default: '-',
-                        desc: '开放能力，见[见文档](https://uniapp.dcloud.net.cn/component/button.html#open-type-%E6%9C%89%E6%95%88%E5%80%BC)',
+                        desc: `开放能力，[见文档](https://uniapp.dcloud.net.cn/component/button.html#open-type-%E6%9C%89%E6%95%88%E5%80%BC)`,
                     },
                     {
                         name: 'app-parameter',
                         type: 'string',
                         default: '-',
-                        desc: '[见文档](https://uniapp.dcloud.net.cn/component/button.html',
+                        desc: `[见文档](https://uniapp.dcloud.net.cn/component/button.html)`,
                     },
                     {
                         name: 'session-from',
                         type: 'string',
                         default: '-',
-                        desc: '[见文档](https://uniapp.dcloud.net.cn/component/button.html',
+                        desc: '[见文档](https://uniapp.dcloud.net.cn/component/button.html)',
                     },
                     {
                         name: 'send-message-title',
                         type: 'string',
                         default: '-',
-                        desc: '[见文档](https://uniapp.dcloud.net.cn/component/button.html',
+                        desc: '[见文档](https://uniapp.dcloud.net.cn/component/button.html)',
                     },
                     {
                         name: 'send-message-path',
                         type: 'string',
                         default: '-',
-                        desc: '[见文档](https://uniapp.dcloud.net.cn/component/button.html',
+                        desc: '[见文档](https://uniapp.dcloud.net.cn/component/button.html)',
                     },
                     {
                         name: 'send-message-img',
                         type: 'string',
                         default: '-',
-                        desc: '[见文档](https://uniapp.dcloud.net.cn/component/button.html',
+                        desc: '[见文档](https://uniapp.dcloud.net.cn/component/button.html)',
                     },
                     {
                         name: 'send-message-card',
                         type: 'string',
                         default: '-',
-                        desc: '[见文档](https://uniapp.dcloud.net.cn/component/button.html',
+                        desc: '[见文档](https://uniapp.dcloud.net.cn/component/button.html)',
                     },
                     {
                         name: 'disabled-color',
@@ -699,6 +846,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '图标 Icon',
         desc: '常用组件图标。',
         doc: 'https://tmui.design/com/Icon.html',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -787,6 +935,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '文本 Text',
         desc: '自带主题和常用属性，能根据全局主题和暗黑自动切换，必须放在tmSheet下，获得更好的主题适应能力。',
         doc: 'https://tmui.design/com/Text.html',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -794,13 +943,13 @@ export const componentMap: Record<string, ComponentDesc> = {
                 table: [
                     {
                         name: 'label',
-                        type: 'string|number',
+                        type: 'string\\|number',
                         default: '-',
                         desc: '文本标签',
                     },
                     {
                         name: 'font-size',
-                        type: 'number|string',
+                        type: 'number\\|string',
                         default: '`28`',
                         desc: '字体大小',
                     },
@@ -812,7 +961,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'selectable',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`false`',
                         desc: '是否可选',
                     },
@@ -831,7 +980,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'line-height',
-                        type: 'number|string',
+                        type: 'number\\|string',
                         default: '`auto`',
                         desc: '行高',
                     }
@@ -863,6 +1012,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '分割线 Divider',
         desc: '用于将不同内容的区域进行分割，提高页面美观度和可读性！',
         doc: 'https://tmui.design/com/Divider.html',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -963,6 +1113,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '宫格 Grid',
         desc: '宫格用于把元素进行水平方向分割成等宽区块，是较为常用的布局方式，通常用于页面导航。',
         doc: 'https://tmui.design/com/Grid.html',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -1019,6 +1170,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '宫格子组件 Grid-Item',
         desc: '宫格子组件',
         doc: 'https://tmui.design/com/Grid.html#%E5%AE%AB%E6%A0%BC%E5%AD%90%E7%BB%84%E4%BB%B6-grid-item',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -1032,19 +1184,19 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'dot',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`false`',
                         desc: '是否显示红点',
                     },
                     {
                         name: 'icon',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`false`',
                         desc: '显示图标',
                     },
                     {
                         name: 'count',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`0`',
                         desc: '为数字时，显示数字角标，如果为string是显示文本角标',
                     },
@@ -1094,6 +1246,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '布局 Row',
         desc: '你可以用来排版，排列，九宫格等需要排版布局时非常有用。比如自己作表格等。 它是按12列划分的,当然也可以通过属性更改列数哦。',
         doc: 'https://tmui.design/com/Row.html#%E5%B8%83%E5%B1%80-row',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -1181,6 +1334,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '布局 Col',
         desc: '必须配合tmRow使用。否则报错。',
         doc: 'https://tmui.design/com/Row.html#col%E7%BB%84%E4%BB%B6%E5%8F%82%E6%95%B0',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -1200,7 +1354,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'transprent',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`false`',
                         desc: '是否透明',
                     },
@@ -1255,6 +1409,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '基础容器 Sheet',
         desc: '用于布局的容器组件，方便快速搭建页面的基本结构。',
         doc: 'https://tmui.design/com/Sheet.html',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -1292,13 +1447,13 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'transprent',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`false`',
                         desc: '是否透明',
                     },
                     {
                         name: 'border',
-                        type: 'number|string',
+                        type: 'number\\|string',
                         default: '`0`',
                         desc: '边框',
                     },
@@ -1420,6 +1575,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '头像 Avatar',
         desc: '本组件一般用于展示头像的地方，如个人中心，或者评论列表页的用户头像展示等场所。',
         doc: 'https://tmui.design/com/Avatar.html',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -1433,7 +1589,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'trigger',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`false`',
                         desc: '是否开启交互，在pc端有用，鼠标移上去变成手型',
                     },
@@ -1457,7 +1613,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'round',
-                        type: 'number|string',
+                        type: 'number\\|string',
                         default: '`6`',
                         desc: '圆角，0-26',
                     },
@@ -1487,7 +1643,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'transprent',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`false`',
                         desc: '-',
                     },
@@ -1567,6 +1723,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '二维码 Qrcode',
         desc: '二维码组件，用于生成二维码',
         doc: 'https://tmui.design/com/Qrcode.html',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -1586,7 +1743,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                 table: [
                     {
                         name: 'base-color',
-                        type: 'string|string[]',
+                        type: 'string\\|string[]',
                         default: '`#fff`',
                         desc: '二维码背景色,可以是数组颜色，将产生渐变',
                     },
@@ -1598,7 +1755,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'background-color',
-                        type: 'string|string[]',
+                        type: 'string\\|string[]',
                         default: '`-`',
                         desc: '背景色,可以是数组颜色，将产生渐变。',
                     },
@@ -1622,7 +1779,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'forground-color',
-                        type: 'string|string[]',
+                        type: 'string\\|string[]',
                         default: '`#000`',
                         desc: '二维码前景色,也可以是["#FF0000","#FFFF00"]如果提供数组，将会绘制渐变色',
                     },
@@ -1685,6 +1842,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '徽标 Badge',
         desc: '该组件一般用于图标右上角显示未读的消息数量，提示用户点击，有圆点和圆包含文字两种形式。',
         doc: 'https://tmui.design/com/Badge.html',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -1692,7 +1850,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                 table: [
                     {
                         name: 'round',
-                        type: 'number|string',
+                        type: 'number\\|string',
                         default: '`6`',
                         desc: '圆角，0-26',
                     },
@@ -1722,7 +1880,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'transprent',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`false`',
                         desc: '-',
                     },
@@ -1740,31 +1898,31 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'status',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`false`',
                         desc: '为真时，隐藏插槽数据，展现状态文本模式。',
                     },
                     {
                         name: 'dot',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`false`',
                         desc: '使用点。优先级高于label数字展示。',
                     },
                     {
                         name: 'icon',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`false`',
                         desc: '使用图标作为显示角标',
                     },
                     {
                         name: 'count',
-                        type: 'number|string',
+                        type: 'number\\|string',
                         default: '`0`',
                         desc: '如果count为数字时，显示数字角标，如果为string是显示文本角标。',
                     },
                     {
                         name: 'max-count',
-                        type: 'number|string',
+                        type: 'number\\|string',
                         default: '`999`',
                         desc: '如果count为数字时，最大数值',
                     },
@@ -1808,6 +1966,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '卡片 Card',
         desc: '卡片组件，用于展示一些内容，比如商品列表，文章列表等。',
         doc: 'https://tmui.design/com/Card.html',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -1815,13 +1974,13 @@ export const componentMap: Record<string, ComponentDesc> = {
                 table: [
                     {
                         name: 'shadow',
-                        type: 'number|string',
+                        type: 'number\\|string',
                         default: '`2`',
                         desc: '卡片投影，0-26',
                     },
                     {
                         name: 'round',
-                        type: 'number|string',
+                        type: 'number\\|string',
                         default: '`4`',
                         desc: '卡片圆角，0-26',
                     },
@@ -1845,7 +2004,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'transprent',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`false`',
                         desc: '-',
                     },
@@ -1937,6 +2096,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '轮播 Carousel',
         desc: '该组件一般用于导航轮播，广告展示等场景,可开箱即用。',
         doc: 'https://tmui.design/com/Carousel.html',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -1986,7 +2146,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'list',
-                        type: 'string[]|ListItem[]',
+                        type: 'string[]\\|ListItem[]',
                         default: '`[]`',
                         desc: '图片列表，可以是string数组或者ListItem数组，ListItem结构见下方',
                     },
@@ -2157,6 +2317,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '折叠面板 Collapse',
         desc: '通过折叠面板收纳内容区域。',
         doc: 'https://tmui.design/com/Collapse.html',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -2176,13 +2337,13 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'accordion',
-                        type: 'boolean|string',
+                        type: `boolean\\|string`,
                         default: '`false`',
                         desc: '是否设置为单个面板展开，默认fase，允许 多个面板同时展开',
                     },
                     {
                         name: 'border',
-                        type: 'number|string',
+                        type: 'number\\|string',
                         default: '`2`',
                         desc: '边框',
                     },
@@ -2234,6 +2395,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '折叠面板 CollapseItem，必须配合Collapse使用',
         desc: '通过折叠面板收纳内容区域。',
         doc: 'https://tmui.design/com/Collapse.html#collapseitem',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -2253,7 +2415,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'name',
-                        type: 'string|number',
+                        type: 'string\\|number',
                         default: '`-`',
                         desc: '必填，标识，用来展开和关闭的标识,Collapse的activeKey，defaultActiveKey数组标识就是此值',
                     },
@@ -2360,6 +2522,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '评论 Comment',
         desc: '评论组件，用于展示评论列表，或者评论输入框。',
         doc: 'https://tmui.design/com/Comment.html',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -2409,7 +2572,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'transprent',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`false`',
                         desc: '-',
                     },
@@ -2421,7 +2584,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'border-bottom',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`false`',
                         desc: '是否显示底部的边线',
                     },
@@ -2550,6 +2713,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '单元格 Cell',
         desc: '常用于列表',
         doc: 'https://tmui.design/com/Cell.html',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -2557,13 +2721,13 @@ export const componentMap: Record<string, ComponentDesc> = {
                 table: [
                     {
                         name: 'shadow',
-                        type: 'number|string',
+                        type: 'number\\|string',
                         default: '`0`',
                         desc: '投影，0-25',
                     },
                     {
                         name: 'round',
-                        type: 'number|string',
+                        type: 'number\\|string',
                         default: '`0`',
                         desc: '圆角，0-25，单位rpx',
                     },
@@ -2587,7 +2751,7 @@ export const componentMap: Record<string, ComponentDesc> = {
                     },
                     {
                         name: 'transprent',
-                        type: 'boolean|string',
+                        type: 'boolean\\|string',
                         default: '`false`',
                         desc: '是否透明',
                     },
@@ -2771,6 +2935,7 @@ export const componentMap: Record<string, ComponentDesc> = {
         title: '倒计时 Countdown',
         desc: '常用于计时，短信验证码倒计时，活动倒计时等。',
         doc: 'https://tmui.design/com/Countdown.html',
+        compalicity: COMPALICITY,
         propsList: [
             {
                 title: '参数',
@@ -2847,6 +3012,1545 @@ export const componentMap: Record<string, ComponentDesc> = {
                     desc: '倒计时数据',
                 }
             ],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'descriptions': {
+        name: 'descriptions',
+        title: '描述 Descriptions',
+        desc: '主要用于详细字段的陈述，可用于详情，列表一些描述性展示',
+        doc: 'https://tmui.design/com/Descriptions.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: '',
+                table: [
+                    {
+                        name: 'shadow',
+                        type: 'number\\|string',
+                        default: '`0`',
+                        desc: '投影，0-25',
+                    },
+                    {
+                        name: 'round',
+                        type: 'number\\|string',
+                        default: '`0`',
+                        desc: '圆角，0-25，单位rpx',
+                    },
+                    {
+                        name: 'border',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '边框宽度',
+                    },
+                    {
+                        name: 'margin',
+                        type: 'number[]',
+                        default: '`[0,0]`',
+                        desc: '外间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'padding',
+                        type: 'number[]',
+                        default: '`[16,16]`',
+                        desc: '内间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'transprent',
+                        type: 'boolean\\|string',
+                        default: '`false`',
+                        desc: '是否透明',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`white`',
+                        desc: '背景颜色',
+                    },
+                    {
+                        name: 'column',
+                        type: 'number\\|string',
+                        default: '`2`',
+                        desc: '需要展示的列数',
+                    },
+                    {
+                        name: 'data',
+                        type: 'DescriptionItem[]',
+                        default: '`[]`',
+                        desc: '数据，结构见下方。这个是快捷方法，如果提供了，那么插槽中不需要填写tm-descriptions-item',
+                    },
+                    {
+                        name: 'key-map',
+                        type: 'object',
+                        default: '`{key:\'label\',value:\'value\'}`',
+                        desc: '数据结构映射，key为label,value为value',
+                    },
+                    {
+                        name: 'title',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '头部左边的标题',
+                    },
+                    {
+                        name: 'label-width',
+                        type: 'number\\|string',
+                        default: '`-`',
+                        desc: '标签宽度，单位rpx',
+                    }
+                ],
+            },
+            {
+                title: 'DescriptionItem 结构',
+                desc: 'data数据结构',
+                table: [
+                    {
+                        name: 'label',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '标签文本',
+                    },
+                    {
+                        name: 'value',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '标签值',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '标签文字颜色',
+                    },
+                    {
+                        name: 'font-size',
+                        type: 'number',
+                        default: '`23`',
+                        desc: '标签文字大小',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '无',
+            table: [],
+        },
+        slots: {
+            desc: '',
+            table: [
+                {
+                    name: 'title',
+                    data: '-',
+                    type: '-',
+                    desc: '自定义头部的内容',
+                }
+            ],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'descriptions-item': {
+        name: 'descriptions-item',
+        title: '描述 DescriptionsItem',
+        desc: '主要用于详细字段的陈述，可用于详情，列表一些描述性展示',
+        doc: 'https://tmui.design/com/Descriptions.html#tm-descriptions-item%E5%8F%82%E6%95%B0',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: '',
+                table: [
+                    {
+                        name: 'label',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '标签文本',
+                    },
+                    {
+                        name: 'value',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '标签值',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '标签文字颜色',
+                    },
+                    {
+                        name: 'font-size',
+                        type: 'number',
+                        default: '`23`',
+                        desc: '标签文字大小',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '无',
+            table: [],
+        },
+        slots: {
+            desc: '无',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'image': {
+        name: 'image',
+        title: '图片 Image',
+        desc: '可以搭配图片组tm-image-group使用,形成一个图片相册展示。提供了预览，删除，增强内容显示。',
+        doc: 'https://tmui.design/com/Image.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'margin',
+                        type: 'number[]',
+                        default: '`[0,0]`',
+                        desc: '外间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'padding',
+                        type: 'number[]',
+                        default: '`[0,0]`',
+                        desc: '内间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`white`',
+                        desc: '边框颜色',
+                    },
+                    {
+                        name: 'transprent',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '是否透明',
+                    },
+                    {
+                        name: 'border',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '边框宽度',
+                    },
+                    {
+                        name: 'round',
+                        type: 'number\\|string',
+                        default: '`0`',
+                        desc: '圆角，0-25，单位rpx',
+                    },
+                    {
+                        name: 'width',
+                        type: 'number\\|string',
+                        default: '`200`',
+                        desc: '宽度，单位rpx',
+                    },
+                    {
+                        name: 'height',
+                        type: 'number\\|string',
+                        default: '`200`',
+                        desc: '高度，单位rpx',
+                    },
+                    {
+                        name: 'src',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '图片地址',
+                    },
+                    {
+                        name: 'error-icon',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '加载错误icon',
+                    },
+                    {
+                        name: 'error-label',
+                        type: 'string',
+                        default: '`加载错误`',
+                        desc: '加载错误提示文字',
+                    },
+                    {
+                        name: 'preview',
+                        type: 'boolean\\|string',
+                        default: '`false`',
+                        desc: '是否开启预览',
+                    },
+                    {
+                        name: 'extra',
+                        type: 'boolean\\|string',
+                        default: '`false`',
+                        desc: '是否开启图片额外插槽显示内容。',
+                    },
+                    {
+                        name: 'extra-position',
+                        type: 'string',
+                        default: '`in`',
+                        desc: 'in:叠加图片上显示,out：图片下方显示',
+                    },
+                    {
+                        name: 'delete',
+                        type: 'boolean\\|string',
+                        default: '`false`',
+                        desc: '展示关闭删除按钮。',
+                    },
+                    {
+                        name: 'allow-delete',
+                        type: 'boolean\\|string',
+                        default: '`true`',
+                        desc: '是否允许点击delete图标关闭自己，如果为false,将仅触发delete事件，本身图片不会被关闭。',
+                    },
+                    {
+                        name: 'model',
+                        type: 'string',
+                        default: '`scaleToFill`',
+                        desc: '图片缩放模式，[参考官网](https://uniapp.dcloud.io/component/image.html)',
+                    },
+                    {
+                        name: 'unit',
+                        type: 'string',
+                        default: '`rpx`',
+                        desc: '单位',
+                    },
+                    {
+                        name: 'show-load',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '是否显示加载动画',
+                        minVersion: 'v3.0.77+',
+                    },
+                    {
+                        name: 'show-menu-by-long-press',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '长按是否显示识别菜单',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'load',
+                    data: 'imginfo',
+                    cb: 'Object',
+                    desc: '返回:{width,height},图片加载完成时触发',
+                },
+                {
+                    name: 'error',
+                    data: '出错信息',
+                    cb: 'Object',
+                    desc: '当图片发生错误时触发此事件',
+                },
+                {
+                    name: 'click',
+                    data: '当前图片地址',
+                    cb: 'String',
+                    desc: '点击图片时触发',
+                },
+                {
+                    name: 'delete',
+                    data: '返回已删除图片的路径',
+                    cb: 'String',
+                    desc: '删除每一张都会触发。',
+                }
+            ],
+        },
+        slots: {
+            desc: '',
+            table: [
+                {
+                    name: 'extra',
+                    data: '-',
+                    type: '-',
+                    desc: '展示额外的内容',
+                },
+                {
+                    name: 'error',
+                    data: '-',
+                    type: '-',
+                    desc: '加载错误时的插槽',
+                },
+                {
+                    name: 'load',
+                    data: '-',
+                    type: '-',
+                    desc: '加载中的插槽',
+                }
+            ],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'image-group': {
+        name: 'image-group',
+        title: '图片组 ImageGroup',
+        desc: '它不能单独使用，必须和tm-image配合使用。',
+        doc: 'https://tmui.design/com/Image.html#%E5%9B%BE%E7%89%87%E7%BB%84-image-group',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: '',
+                table: [
+                    {
+                        name: 'width',
+                        type: 'number\\|string',
+                        default: '`0`',
+                        desc: '默认为0,宽度自动。',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '无',
+            table: [],
+        },
+        slots: {
+            desc: '无',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'indexes': {
+        name: 'indexes',
+        title: '索引列表 Indexes',
+        desc: '索引列表，内部只能放置tm-indexes-item组件。',
+        doc: 'https://tmui.design/com/Indexes.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'follow-theme',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '是否应用主题色',
+                    },
+                    {
+                        name: 'width',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '宽度，单位rpx',
+                    },
+                    {
+                        name: 'height',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '高度，单位rpx',
+                    },
+                    {
+                        name: 'margin',
+                        type: 'number[]',
+                        default: '`[0,0]`',
+                        desc: '外间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'padding',
+                        type: 'number[]',
+                        default: '`[0,0]`',
+                        desc: '内间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: '自定义颜色值或主题色值，followTheme为false时生效',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'navClick',
+                    data: '-',
+                    cb: '索引的值',
+                    desc: '点击索引时触发',
+                }
+            ],
+        },
+        slots: {
+            desc: '',
+            table: [
+                {
+                    name: 'default',
+                    data: '-',
+                    type: '-',
+                    desc: '默认插槽，用于放置tm-indexes-item组件',
+                }
+            ],
+        },
+        refs: {
+            desc: '',
+            table: [
+                {
+                    name: 'compentNameId',
+                    data: '-',
+                    cb: 'tmIndexesId',
+                    desc: '名称标识',
+                },
+                {
+                    name: 'pushKey',
+                    data: '三个参数 height(number), id(number), text(string)',
+                    cb: '-',
+                    desc: '添加索引',
+                },
+                {
+                    name: 'delKey',
+                    data: '二个参数 height(number), id(number)',
+                    cb: '-',
+                    desc: '删除索引',
+                }
+            ],
+        },
+    },
+    'indexes-item': {
+        name: 'indexes-item',
+        title: '索引列表 IndexesItem',
+        desc: '索引列表子组件，必须放置在tm-indexes组件中。',
+        doc: 'https://tmui.design/com/Indexes.html#tm-indexes-item',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: '',
+                table: [
+                    {
+                        name: 'margin',
+                        type: 'number[]',
+                        default: '`[0,0]`',
+                        desc: '外间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'padding',
+                        type: 'number[]',
+                        default: '`[32,0]`',
+                        desc: '内间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'height',
+                        type: 'number',
+                        default: '`100`',
+                        desc: '高度，单位rpx',
+                    },
+                    {
+                        name: 'title',
+                        type: 'string\\|number',
+                        default: '`-`',
+                        desc: '分类标题',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '无',
+            table: [],
+        },
+        slots: {
+            desc: '无',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'more': {
+        name: 'more',
+        title: '显示更多 More',
+        desc: '超过指定高度，默认隐藏更多内容。',
+        doc: 'https://tmui.design/com/More.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'height',
+                        type: 'number',
+                        default: '`250`',
+                        desc: '超过指定高时隐藏并显示更多。',
+                    },
+                    {
+                        name: 'open-label',
+                        type: 'string',
+                        default: '`收起更多`',
+                        desc: '展开时显示的文字',
+                    },
+                    {
+                        name: 'close-label',
+                        type: 'string',
+                        default: '`展开更多`',
+                        desc: '收起时显示的文字',
+                    },
+                    {
+                        name: 'before-open',
+                        type: 'boolean\\|function',
+                        default: '`-`',
+                        desc: '在点击打开之前执行。如果返回false，将阻止查看内容。Function可以返回Promise',
+                    },
+                    {
+                        name: 'light-mask-color',
+                        type: 'string[]',
+                        default: '`[\'rgba(255,255,255,1)\',\'rgba(255,255,255,0.7)\']`',
+                        desc: '亮系时的遮罩颜色（渐变)',
+                    },
+                    {
+                        name: 'dark-mask-color',
+                        type: 'string[]',
+                        default: '`[\'rgba(0,0,0,1)\',\'rgba(0,0,0,0)\']`',
+                        desc: '暗系时的遮罩颜色（渐变)',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'change',
+                    data: '-',
+                    cb: '-',
+                    desc: '打开和隐藏时触发，返回当前打开的状态值。',
+                }
+            ],
+        },
+        slots: {
+            desc: '',
+            table: [
+                {
+                    name: 'more',
+                    data: '-',
+                    type: '-',
+                    desc: '自定义底部展开和收起更多的工具条',
+                }
+            ],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'result': {
+        name: 'result',
+        title: '结果页 Result',
+        desc: '主要用来显示页面当前状态，比如空，出错等。',
+        doc: 'https://tmui.design/com/Result.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'status',
+                        type: 'string',
+                        default: '`empty`',
+                        desc: '状态，可选：empty,error,success,warning,lock,network',
+                    },
+                    {
+                        name: 'icon',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '图标名称或者图片地址',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: '图标颜色',
+                    },
+                    {
+                        name: 'title',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '标题',
+                    },
+                    {
+                        name: 'sub-title',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '标题下的副标题描述',
+                    },
+                    {
+                        name: 'btn-text',
+                        type: 'string',
+                        default: '`确认`',
+                        desc: '按钮文字',
+                    },
+                    {
+                        name: 'follow-theme',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '是否跟随全局主题的变换而变换',
+                    },
+                    {
+                        name: 'follow-dark',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '是否跟随暗黑',
+                    },
+                    {
+                        name: 'text',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '是否浅色背景',
+                    },
+                    {
+                        name: 'size',
+                        type: 'number',
+                        default: '`140`',
+                        desc: '尺寸',
+                    },
+                    {
+                        name: 'dark',
+                        type: 'boolean\\|string',
+                        default: '`false`',
+                        desc: '是否暗黑',
+                    },
+                    {
+                        name: 'show-btn',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '是否显示底部的操作按钮。',
+                    },
+                    {
+                        name: 'click-disabled',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '默认禁用。是否禁用整个组件的点击事件触发。',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'click',
+                    data: '-',
+                    cb: 'event',
+                    desc: '点击按钮时触发',
+                },
+                {
+                    name: 'resultClick',
+                    data: '-',
+                    cb: 'event',
+                    desc: '点击整个组件时触发，可通过clickDisabled禁止触发',
+                }
+            ],
+        },
+        slots: {
+            desc: '',
+            table: [
+                {
+                    name: 'default',
+                    data: '-',
+                    type: '-',
+                    desc: '自定义内容',
+                },
+            ],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'popover': {
+        name: 'popover',
+        title: '气泡卡片 Popover',
+        desc: '用来提示，帮助展示信息等。',
+        doc: 'https://tmui.design/com/Popover.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'shadow',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '投影，0-25',
+                    },
+                    {
+                        name: 'border',
+                        type: 'number\\|string',
+                        default: '`0`',
+                        desc: '边框宽度',
+                    },
+                    {
+                        name: 'round',
+                        type: 'number\\|string',
+                        default: '`3`',
+                        desc: '圆角，0-25，单位rpx',
+                    },
+                    {
+                        name: 'transprent',
+                        type: 'boolean\\|string',
+                        default: '`false`',
+                        desc: '是否透明',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`white`',
+                        desc: '气泡背景颜色',
+                    },
+                    {
+                        name: 'width',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '宽度，单位rpx',
+                    },
+                    {
+                        name: 'position',
+                        type: 'string',
+                        default: '`tc`',
+                        desc: '气泡显示位置，可选：tl,tc,tr,bl,bc,br,上左，上中，上右，下左，下中，下右',
+                    },
+                    {
+                        name: 'label',
+                        type: 'string',
+                        default: '`提示内容`',
+                        desc: '气泡显示内容',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '无',
+            table: [],
+        },
+        slots: {
+            desc: '默认default，触发发弹层。 label插槽，弹层显示内容的占位(3.1.0版本新增)。',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'statistic': {
+        name: 'statistic',
+        title: '数值显示 Statistic',
+        desc: '主要用来显示数值，翻转动画。',
+        doc: 'https://tmui.design/com/Statistic.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'follow-theme',
+                        type: 'boolean\\|string',
+                        default: '`true`',
+                        desc: '是否跟随全局主题的变换而变换',
+                    },
+                    {
+                        name: 'font-size',
+                        type: 'number',
+                        default: '`30`',
+                        desc: '字体大小',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '字体颜色',
+                    },
+                    {
+                        name: 'start-val',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '起始值',
+                    },
+                    {
+                        name: 'end-val',
+                        type: 'number',
+                        default: '`2021`',
+                        desc: '最终值',
+                    },
+                    {
+                        name: 'duration',
+                        type: 'number',
+                        default: '`3000`',
+                        desc: '从起始值到结束值数字变动的时间',
+                    },
+                    {
+                        name: 'autoplay',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '是否自动播放',
+                    },
+                    {
+                        name: 'decimals',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '保留的小数位数',
+                    },
+                    {
+                        name: 'decimal',
+                        type: 'string',
+                        default: '`.`',
+                        desc: '小数点分割符号',
+                    },
+                    {
+                        name: 'separator',
+                        type: 'string',
+                        default: '`,`',
+                        desc: '上了三位数分割的符号',
+                    },
+                    {
+                        name: 'prefix',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '前缀',
+                    },
+                    {
+                        name: 'suffix',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '后缀',
+                    },
+                    {
+                        name: 'use-easing',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '是否具有连贯性',
+                    },
+                    {
+                        name: 'is-frequent',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否隔一段时间数字跳动，这里的跳动是隔一段时间设置初始值',
+                    },
+                    {
+                        name: 'frequent-time',
+                        type: 'number',
+                        default: '`5000`',
+                        desc: '跳动间隔时间',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'mountedCallback',
+                    data: '-',
+                    cb: '-',
+                    desc: '组件挂载成功事件',
+                },
+                {
+                    name: 'callback',
+                    data: '-',
+                    cb: '-',
+                    desc: '数字变动时触发',
+                }
+            ],
+        },
+        slots: {
+            desc: '',
+            table: [
+                {
+                    name: 'prefix',
+                    data: '-',
+                    type: '-',
+                    desc: '前缀插槽',
+                },
+                {
+                    name: 'suffix',
+                    data: '-',
+                    type: '-',
+                    desc: '后缀插槽',
+                },
+                {
+                    name: 'default',
+                    data: '-',
+                    type: '-',
+                    desc: '默认插槽',
+                }
+            ],
+        },
+        refs: {
+            desc: '',
+            table: [
+                {
+                    name: 'start',
+                    data: 'startVal:number',
+                    cb: '-',
+                    desc: '开始数值动画',
+                },
+                {
+                    name: 'reset',
+                    data: '-',
+                    cb: '-',
+                    desc: '重置数值动画',
+                },
+                {
+                    name: 'pause',
+                    data: '-',
+                    cb: '-',
+                    desc: '暂停数值动画',
+                }
+            ],
+        },
+    },
+    'table': {
+        name: 'table',
+        title: '表格 Table',
+        desc: '本组件主要的功能有：\n1.单元格特定的样式，类型（按钮，文本）\n2.纵向单列统一的样式设置，比如背景颜色，亮浅，宽度，排序等\n3.斑马纹的开启和关闭\n如果看不懂文档，请复制demo示例查看，demo包含了所有可能用到的功能。',
+        doc: 'https://tmui.design/com/Table.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'show-header',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '是否显示表头',
+                    },
+                    {
+                        name: 'table-data',
+                        type: 'ArrayasPropType<Array<cellItem>>',
+                        default: '`[]`',
+                        desc: '表格数据，结构见下方',
+                    },
+                    {
+                        name: 'width',
+                        type: 'number',
+                        default: '`750`',
+                        desc: '宽度，单位rpx',
+                    },
+                    {
+                        name: 'height',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '高度，单位rpx',
+                    },
+                    {
+                        name: 'cell-height',
+                        type: 'number',
+                        default: '`72`',
+                        desc: '单元格高度',
+                    },
+                    {
+                        name: 'header-height',
+                        type: 'number',
+                        default: '`88`',
+                        desc: '表头高度',
+                    },
+                    {
+                        name: 'show-bottom-border',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '是否显示底部边框',
+                    }
+                ],
+            },
+            {
+                title: 'TableData 结构',
+                desc: '表格数据结构',
+                table: [
+                    {
+                        name: 'fields',
+                        type: '{columns: string[]}',
+                        default: '`-`',
+                        desc: '表格列的字段名',
+                    },
+                    {
+                        name: 'header',
+                        type: 'HeaderType[]',
+                        default: '`-`',
+                        desc: '表格头部数据，结构见下方',
+                    },
+                    {
+                        name: 'data',
+                        type: 'TableCellData[]',
+                        default: '`-`',
+                        desc: '表格行数据，结构见下方',
+                    }
+                ],
+            },
+            {
+                title: 'HeaderType 结构',
+                desc: '表格头部数据结构',
+                table: [
+                    {
+                        name: 'field',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '字段名',
+                    },
+                    {
+                        name: 'name',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '表头名称',
+                    },
+                    {
+                        name: 'opts',
+                        type: 'TableCellStyleType',
+                        default: '`-`',
+                        desc: '表头样式，TableCellStyleType结构见下方',
+                    },
+                    {
+                        name: '[key: string]',
+                        type: 'any',
+                        default: '`-`',
+                        desc: '其他自定义数据',
+                    }
+                ],
+            },
+            {
+                title: 'TableCellData 结构',
+                desc: '表格行数据结构',
+                table: [
+                    {
+                        name: 'value',
+                        type: 'string\\|number',
+                        default: '`-`',
+                        desc: '单元格值',
+                    },
+                    {
+                        name: 'opts',
+                        type: 'TableCellStyleType',
+                        default: '`-`',
+                        desc: '单元格样式，TableCellStyleType结构见下方',
+                    },
+                    {
+                        name: '[key: string]',
+                        type: 'any',
+                        default: '`-`',
+                        desc: '其他自定义数据',
+                    }
+                ],
+            },
+            {
+                title: 'TableCellStyleType 结构',
+                desc: '表格样式结构',
+                table: [
+                    {
+                        name: 'type',
+                        type: '`\'button\'|\'text\'`',
+                        default: '`text`',
+                        desc: '单元格类型，按钮或者文本',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '单元格颜色',
+                    },
+                    {
+                        name: 'fontColor',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '单元格字体颜色',
+                    },
+                    {
+                        name: 'fontSize',
+                        type: 'number',
+                        default: '`-`',
+                        desc: '单元格字体大小',
+                    },
+                    {
+                        name: 'light',
+                        type: 'boolean',
+                        default: '`-`',
+                        desc: '是否浅色背景',
+                    },
+                    {
+                        name: 'transparent',
+                        type: 'boolean',
+                        default: '`-`',
+                        desc: '是否透明',
+                    },
+                    {
+                        name: 'asyncStyleCell',
+                        type: 'boolean',
+                        default: '`-`',
+                        desc: '是否头和所在列同步同的背景色和文字色,注意该参数只在header中的opts有效',
+                    },
+                    {
+                        name: 'sort',
+                        type: 'boolean',
+                        default: '`-`',
+                        desc: '该列是否显示 排序功能，注意该参数只在header中的opts有效',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'row-click',
+                    data: '',
+                    cb: '(rowIndex:number,colIndex:number)',
+                    desc: '单元按钮被点击时触发',
+                },
+            ],
+        },
+        slots: {
+            desc: '无',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'tabs': {
+        name: 'tabs',
+        title: '选项卡 Tabs',
+        desc: '可以单独使用，配合tm-tabs-pane可实现卡片内容切换。',
+        doc: 'https://tmui.design/com/Tabs.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'list',
+                        type: 'ArrayasPropType<Array<tabsobj>>',
+                        default: '`[]`',
+                        desc: '选项卡数据，结构见下方',
+                    },
+                    {
+                        name: 'rang-key',
+                        type: 'string',
+                        default: '`title`',
+                        desc: 'list标题字段值，默认是title',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`white`',
+                        desc: 'tabs背景颜色',
+                    },
+                    {
+                        name: 'transparent',
+                        type: 'boolean\\|string',
+                        default: '`false`',
+                        desc: '是否透明',
+                    },
+                    {
+                        name: 'width',
+                        type: 'number',
+                        default: '`500`',
+                        desc: '宽度，单位rpx',
+                    },
+                    {
+                        name: 'item-height',
+                        type: 'number',
+                        default: '`80`',
+                        desc: '选项卡高度',
+                    },
+                    {
+                        name: 'height',
+                        type: 'number',
+                        default: '`1000`',
+                        desc: '高度，单位rpx',
+                    },
+                    {
+                        name: 'gutter',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '内容在bar中的上下间隔',
+                    },
+                    {
+                        name: 'default-name',
+                        type: 'string\\|number',
+                        default: '`-`',
+                        desc: '默认值',
+                    },
+                    {
+                        name: 'active-name',
+                        type: 'string\\|number',
+                        default: '`-`',
+                        desc: '当前活动项。v-model:active-name',
+                    },
+                    {
+                        name: 'tab-pos',
+                        type: 'string',
+                        default: '`top`',
+                        desc: 'top导航在上方，bottom导航在下方',
+                    },
+                    {
+                        name: 'item-width',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '项目的宽度',
+                    },
+                    {
+                        name: 'active-color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: 'tab选中的背景颜色',
+                    },
+                    {
+                        name: 'tabs-line-ani-color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: '启用线条动画时的，线条颜色',
+                    },
+                    {
+                        name: 'active-font-color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: 'tab选中的文字颜色',
+                    },
+                    {
+                        name: 'active-font-size',
+                        type: 'number',
+                        default: '`30`',
+                        desc: 'tab选中的文字大小',
+                    },
+                    {
+                        name: 'item-model',
+                        type: 'string',
+                        default: '`text`',
+                        desc: 'line底部线条，card背景颜色模式，text文本模式,textLight背景减淡模式，文字会变灰',
+                    },
+                    {
+                        name: 'un-selected-color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '默认为空即根据主题自定颜色。',
+                    },
+                    {
+                        name: 'item-font-size',
+                        type: 'number',
+                        default: '`28`',
+                        desc: '字体大小',
+                    },
+                    {
+                        name: 'item-linear',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '渐变背景方向，可选left:右->左，right:左->右。top:下->上，bottom:上->下。',
+                    },
+                    {
+                        name: 'item-linear-deep',
+                        type: 'string',
+                        default: '`light`',
+                        desc: '渐变的亮浅，可选light,dark,accent亮系渐变和深色渐变',
+                    },
+                    {
+                        name: 'item-round',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '圆角，0-25，单位rpx',
+                    },
+                    {
+                        name: 'align',
+                        type: 'string',
+                        default: '`left`',
+                        desc: 'left:左对齐,right：右对齐,center：居中,around：居中均分',
+                    },
+                    {
+                        name: 'swiper',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否启用左右滑动内容来切换tabs,开启后注意优化页面性能。',
+                        minVersion: 'v3.0.75+',
+                    },
+                    {
+                        name: 'show-tabs-line-ani',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否启用底部边线动画，点击某一项时，短线自动滑动到目标点=>使用动画必须指定宽度:item-width="110(宽度)"',
+                        minVersion: 'v3.0.77+',
+                    },
+                    {
+                        name: 'show-tabs-line',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '用于开启线性动画后，是否隐藏底部灰色的导轨',
+                    },
+                    {
+                        name: 'dark-bg-color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '有时自动的背景，可能不是你想要暗黑背景，此时可以使用此参数，强制使用背景色',
+                    },
+                    {
+                        name: 'subtract',
+                        type: 'number',
+                        default: '`2`',
+                        desc: '当选中某一项时,内容会往前滚动的项目数量,类似于位置让选中项始终在中间',
+                    }
+                ],
+            },
+            {
+                title: 'Tabsobj 结构',
+                desc: '选项卡数据结构',
+                table: [
+                    {
+                        name: 'key',
+                        type: 'string\\|number',
+                        default: '`-`',
+                        desc: '唯一标识，key也可以写为id',
+                    },
+                    {
+                        name: 'title',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '标题',
+                    },
+                    {
+                        name: 'icon',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '图标',
+                    },
+                    {
+                        name: 'dot',
+                        type: 'boolean',
+                        default: '`-`',
+                        desc: '是否显示角标点',
+                    },
+                    {
+                        name: 'dotColor',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '角标点颜色',
+                    },
+                    {
+                        name: 'count',
+                        type: 'number\\|string',
+                        default: '`-`',
+                        desc: '角标展示的文本',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'update:activeName',
+                    data: '当前key',
+                    cb: '-',
+                    desc: '当前选中项的key值,v-model:active-name',
+                },
+                {
+                    name: 'change',
+                    data: '当前key',
+                    cb: '-',
+                    desc: '当前选中项的key值',
+                },
+                {
+                    name: 'click',
+                    data: '-',
+                    cb: '-',
+                    desc: '点击时触发',
+                }
+            ],
+        },
+        slots: {
+            desc: '无',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'tabs-pane': {
+        name: 'tabs-pane',
+        title: '选项卡面板 TabsPane',
+        desc: '不可以单独使用，必须放置在tm-tabs组件中使用。',
+        doc: 'https://tmui.design/com/Tabs.html#%E9%80%89%E9%A1%B9%E5%8D%A1%E9%9D%A2%E6%9D%BF-tabs-pane',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'transprent',
+                        type: 'boolean\\|string',
+                        default: '`false`',
+                        desc: '是否透明',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`white`',
+                        desc: '背景颜色',
+                    },
+                    {
+                        name: 'name',
+                        type: 'string\\|number',
+                        default: '`-`',
+                        desc: 'name是tabs唯一标识符,不允许为空，且必须为数字或者字符串',
+                    },
+                    {
+                        name: 'title',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '每一项的文字',
+                    },
+                    {
+                        name: 'icon',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '每一项的图标',
+                    },
+                    {
+                        name: 'dot',
+                        type: 'boolean',
+                        default: '`-`',
+                        desc: '是否显示角标点',
+                    },
+                    {
+                        name: 'dot-color',
+                        type: 'string',
+                        default: '`red`',
+                        desc: '角标点颜色',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '无',
+            table: [],
+        },
+        slots: {
+            desc: '无',
+            table: [],
         },
         refs: {
             desc: '无',

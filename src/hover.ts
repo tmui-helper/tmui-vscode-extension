@@ -1,7 +1,7 @@
 // 导入vscode模块
 import * as vscode from 'vscode';
 import { bigCamelCase } from './utils';
-import { getComponentDesc, getComponentLink } from './tmui/componentMap';
+import { getComponentDesc, getComponentLink, componentMap } from './tmui/componentMap';
 import { LINK_REG, LANGUAGE_IDS, LINK_COMPONENT_COMMON_PROPS } from './constant';
 
 // 定义输出组件Markdown文档的方法
@@ -9,7 +9,8 @@ export const renderComponentMd = async (componentName: string) => {
 	let markdownString = '';
 
 	// 获取组件的文档内容
-	const doc = await getComponentDesc(bigCamelCase(componentName));
+	// const doc = await getComponentDesc(bigCamelCase(componentName));
+	const doc = componentMap[componentName];
 
 	// 获取组件的标题
 	// const title = componentMap[componentName].title;
@@ -17,12 +18,16 @@ export const renderComponentMd = async (componentName: string) => {
 	// 获取组件的描述
 	// const desc = componentMap[componentName].desc;
 	const desc = doc.desc;
+	// 获取组件的兼容性描述
+	const compalicity = componentMap[componentName].compalicity;
+	// 获取组件的文档链接
+	const docLink = componentMap[componentName].doc;
 	// 获取组件的属性描述
 	// const propsDesc = componentMap[componentName].props.desc;
-	const propsDesc = doc.props.desc;
+	// const propsDesc = doc.props.desc;
 	// 获取组件的属性列表
 	// const props = componentMap[componentName].props;
-	const props = doc.props.table;
+	const props = doc.propsList;
 	// 获取组件的事件列表
 	// const events = componentMap[componentName].events;
 	const events = doc.events.table;
@@ -42,20 +47,35 @@ export const renderComponentMd = async (componentName: string) => {
 	// 组装组件的标题
 	markdownString += `## ${title}\n\n`;
 	// 组装组件的描述
-	markdownString += `${desc}  [文档原文](${getComponentLink(bigCamelCase(componentName))})\n\n`;
-	// 组装组件的属性列表
-	markdownString += `### 属性\n\n`;
-	// 组装组件的属性描述
-	markdownString += `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})\n\n`;
-	// 判断组件是否有属性
-	if (props.length) {
-		// 组装组件的属性列表
-		markdownString += `|属性名|类型|默认值|说明|\n`;
-		markdownString += `|---|---|---|---|\n`;
+	markdownString += `${desc}  [文档原文](${docLink})\n\n`;
+	if (doc.demoCode && doc.demoCode()?.length) {
+		// 示例代码
+		markdownString += `### 示例代码【由于vscode markdown字符串字数限制，有些示例代码过长会显示不完，请查看[文档原文](${docLink})】\n\n`;
+		// 增加markdown的代码块折叠/展开功能
+		markdownString += `<details>\n`;
+		markdownString += `\t<summary>点击折叠/展开</summary>\n\n`;
+		markdownString += doc.demoCode();
+		markdownString += `</details>\n\n`;
+	}
+	// 组装组件的兼容性描述
+	markdownString += `### 兼容性\n\n`;
+	// 组装组件的兼容性列表
+	markdownString += `|APP-VUE|APP-NVUE|小程序|WEB/H5|VUE3/TS\n`;
+	markdownString += `|---|---|---|---|---|\n`;
+	markdownString += `|${compalicity!.appVue}|${compalicity!.appNvue}|${compalicity!.mp}|${compalicity!.web}|${compalicity!.vue3}|\n\n`;
+	// 遍历组件的属性列表
+	if (props?.length) {
 		props.forEach((item) => {
-			markdownString += `|${item.name}|${item.type}|${item.default}|${item.desc}|\n`;
+			markdownString += `### ${item.title}\n\n`;
+			markdownString += `${item.desc}\n\n`;
+			markdownString += `|属性名|类型|默认值|说明|\n`;
+			markdownString += `|---|---|---|---|\n`;
+			item.table.forEach((item) => {
+				// 判断属性是否有版本要求
+				const minVersion = item.minVersion ? `\`${item.minVersion}\`` : '';
+				markdownString += `|${item.name}${minVersion}|${item.type}|\`${item.default}\`|${item.desc}|\n`;
+			});
 		});
-		markdownString += `\n`;
 	}
 	// 组装组件的事件列表
 	markdownString += `### 事件\n\n`;
@@ -95,6 +115,19 @@ export const renderComponentMd = async (componentName: string) => {
 			markdownString += `|${item.name}|${item.data}|${item.cb}|${item.desc}|\n`;
 		});
 		markdownString += `\n`;
+	}
+
+	if (doc.refs.demoCode && doc.refs.demoCode()?.length) {
+		// 示例代码
+		markdownString += `#### Refs示例代码\n\n`;
+		// 这里不需要折叠，测试发现折叠功能无故失效
+		// 增加markdown的代码块折叠/展开功能
+		// markdownString += `<details>\n`;
+		// markdownString += `\t<summary>点击折叠/展开</summary>\n\n`;
+		// markdownString += `\n`;
+		markdownString += doc.refs.demoCode();
+		// markdownString += `\n`;
+		// markdownString += `</details>\n\n`;
 	}
 
 	// 返回组件的Markdown文档

@@ -48,12 +48,23 @@ interface RefsTable {
 interface Refs {
     desc: string;
     table: RefsTable[];
+    demoCode?: () => string;
+};
+
+interface Compalicity {
+    appVue: string;
+    appNvue: string;
+    mp: string;
+    web: string;
+    vue3: string;
 };
 
 export interface ComponentDesc {
     name: string;
     title: string;
     desc: string;
+    demoCode?: () => string;
+    compalicity?: Compalicity;
     props?: Props;
     propsList?: Props[];
     events: Events;
