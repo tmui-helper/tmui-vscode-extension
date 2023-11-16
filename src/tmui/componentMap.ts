@@ -4556,5 +4556,337 @@ export const componentMap: Record<string, ComponentDesc> = {
             desc: '无',
             table: [],
         },
+    },
+    'tag': {
+        name: 'tag',
+        title: '标签 Tag',
+        desc: '用来标记和分类。',
+        doc: 'https://tmui.design/com/Tag.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'follow-theme',
+                        type: 'boolean\\|string',
+                        default: '`true`',
+                        desc: '颜色是否跟随主题变化',
+                    },
+                    {
+                        name: 'transprent',
+                        type: 'boolean\\|string',
+                        default: '`false`',
+                        desc: '是否透明',
+                    },
+                    {
+                        name: 'border',
+                        type: 'number\\|string',
+                        default: '`0`',
+                        desc: '边框宽度',
+                    },
+                    {
+                        name: 'round',
+                        type: 'number\\|string',
+                        default: '`2`',
+                        desc: '圆角，0-25，单位rpx',
+                    },
+                    {
+                        name: 'shadow',
+                        type: 'number',
+                        default: '`1`',
+                        desc: '投影,0-25',
+                    },
+                    {
+                        name: 'margin',
+                        type: 'number[]',
+                        default: '`[10,10]`',
+                        desc: '外间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'padding',
+                        type: 'number[]',
+                        default: '`[0,0]`',
+                        desc: '内间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'checkable',
+                        type: 'boolean\\|string',
+                        default: '`false`',
+                        desc: '是否开启标签可选中状态',
+                    },
+                    {
+                        name: 'checked',
+                        type: 'boolean\\|string',
+                        default: '`false`',
+                        desc: '只有当checkable为true时有效',
+                    },
+                    {
+                        name: 'load',
+                        type: 'boolean\\|string',
+                        default: '`false`',
+                        desc: '标签是否处于加载中',
+                    },
+                    {
+                        name: 'size',
+                        type: 'string',
+                        default: '`m`',
+                        desc: '标签尺寸，可选：xs,s,m,n,g,lg',
+                    },
+                    {
+                        name: 'font-size',
+                        type: 'number\\|string',
+                        default: '`0`',
+                        desc: '字体大小',
+                    },
+                    {
+                        name: 'font-color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '默认空表示自动配色，填写了主题色将强制使用填写的颜色。',
+                        minVersion: 'v3.0.63+',
+                    },
+                    {
+                        name: 'closable',
+                        type: 'boolean\\|string',
+                        default: '`false`',
+                        desc: '是否允许被关闭',
+                    },
+                    {
+                        name: 'icon',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '图标',
+                    },
+                    {
+                        name: 'icon-align',
+                        type: 'string',
+                        default: '`left`',
+                        desc: '图标位置，可选：left,right',
+                    },
+                    {
+                        name: 'label',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '标签显示的文字',
+                    },
+                    {
+                        name: 'before-close',
+                        type: 'function\\|null',
+                        default: '`null`',
+                        desc: '关闭前的回调，可以返回promise。true允许关闭，false不允许关闭',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'click',
+                    data: '点击事件对象',
+                    cb: '-',
+                    desc: 'tag被点击事件',
+                },
+                {
+                    name: 'close',
+                    data: '-',
+                    cb: '-',
+                    desc: 'tag被关闭事件',
+                },
+                {
+                    name: 'change',
+                    data: 'boolean',
+                    cb: 'boolean',
+                    desc: '切换选中状态时触发',
+                },
+                {
+                    name: 'update:checked',
+                    data: '-',
+                    cb: '-',
+                    desc: '状态发生变化时触发',
+                }
+            ],
+        },
+        slots: {
+            desc: '无',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'timeline': {
+        name: 'timeline',
+        title: '时间轴 Timeline',
+        desc: '内部只可放置 tm-timeline-item 组件，不可放置其它组件。',
+        doc: 'https://tmui.design/com/Timeline.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'reverse',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '翻转',
+                    },
+                    {
+                        name: 'position',
+                        type: 'string',
+                        default: '`left`',
+                        desc: 'left:左对齐,right：右对齐,center：居中',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '无',
+            table: [],
+        },
+        slots: {
+            desc: '无',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'timeline-item': {
+        name: 'timeline-item',
+        title: '时间轴项 TimelineItem',
+        desc: '只能放置在 tm-timeline 组件中使用。',
+        doc: 'https://tmui.design/com/Timeline.html#%E6%97%B6%E9%97%B4%E8%BD%B4-%E5%AD%90%E7%BB%84%E4%BB%B6-timelineitem',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'size',
+                        type: 'number',
+                        default: '`24`',
+                        desc: '时间轴点的大小',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: '时间轴点的颜色',
+                    },
+                    {
+                        name: 'icon',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '时间轴点的图标',
+                    },
+                    {
+                        name: 'border',
+                        type: 'number',
+                        default: '`2`',
+                        desc: '时间轴点的边框宽度',
+                    },
+                    {
+                        name: 'type',
+                        type: 'string',
+                        default: '`outlined`',
+                        desc: '时间轴点的类型，可选：fill,outlined',
+                    },
+                    {
+                        name: 'time',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '时间轴点的时间',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '无',
+            table: [],
+        },
+        slots: {
+            desc: '默认default',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'tree': {
+        name: 'tree',
+        title: '树形结构 Tree',
+        desc: '用来展示层级，文件夹结构体等.',
+        doc: 'https://tmui.design/com/Tree.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'follow-theme',
+                        type: 'boolean\\|string',
+                        default: '`true`',
+                        desc: '颜色是否跟随主题变化',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: '颜色',
+                    },
+                    {
+                        name: 'expanded-icon-open',
+                        type: 'string',
+                        default: '`tmicon-sort-down`',
+                        desc: '父节点打开时的图标',
+                    },
+                    {
+                        name: 'expanded-icon-close',
+                        type: 'string',
+                        default: '`tmicon-caret-right`',
+                        desc: '父节点关闭时的图标',
+                    },
+                    {
+                        name: 'checkable',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '允许在节点前添加复选框',
+                    },
+                    {
+                        name: 'multiple',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '是否允许多选',
+                    },
+                    {
+                        name: 'expanded-id',
+                        type: 'array',
+                        default: '`[]`',
+                        desc: '展开的父节点'
+                    },
+                    {
+                        name: 'default-expanded-id',
+                        type: 'array',
+                        default: '`[]`',
+                        desc: '默认展开的父节点',
+                    },
+                    {
+                        name: 'selected-id',
+                        type: 'array',
+                        default: '`[]`',
+                        desc: '选中的节点。'
+                    }
+                ],
+            }
+        ],
     }
 };
