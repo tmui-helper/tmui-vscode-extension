@@ -4884,9 +4884,2487 @@ export const componentMap: Record<string, ComponentDesc> = {
                         type: 'array',
                         default: '`[]`',
                         desc: '选中的节点。'
+                    },
+                    {
+                        name: 'default-selected-id',
+                        type: 'array',
+                        default: '`[]`',
+                        desc: '默认选中的节点',
+                    },
+                    {
+                        name: 'data',
+                        type: 'NodeData[]',
+                        default: '`[]`',
+                        desc: '结构见下方,生成树结构的数据。结构必须要有id字段。当然可以通过field-names来映射，如果你的唯一标识字段不是Id的话。',
+                    },
+                    {
+                        name: 'field-names',
+                        type: 'object',
+                        default: '`{id: \'id\',text: \'text\'} `',
+                        desc: '映射字段名，比如id,text,disabled,checked,expanded,children',
+                    },
+                    {
+                        name: 'show-line',
+                        type: 'boolean\\|string',
+                        default: '`true`',
+                        desc: '是否显示连线',
+                    }
+                ],
+            },
+            {
+                title: 'NodeData 结构',
+                desc: '树形结构数据结构',
+                table: [
+                    {
+                        name: 'icon',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '节点图标',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '节点颜色',
+                    },
+                    {
+                        name: 'disabled',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否禁用',
+                    },
+                    {
+                        name: 'text',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '节点标题',
+                    },
+                    {
+                        name: 'id',
+                        type: 'number\\|string',
+                        default: '`-`',
+                        desc: '节点标识',
+                    },
+                    {
+                        name: 'checked',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否选中',
+                    },
+                    {
+                        name: 'expanded',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否展开父节点',
                     }
                 ],
             }
         ],
-    }
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'node-click',
+                    data: '-',
+                    cb: '-',
+                    desc: '节点标题点击时触发的事件',
+                },
+                {
+                    name: 'check',
+                    data: 'e: baseNodeData',
+                    cb: '-',
+                    desc: '节点复选框状态变化时触发的事件',
+                },
+                {
+                    name: 'expand',
+                    data: '-',
+                    cb: '-',
+                    desc: '父节点展开/关闭时触发的事件',
+                },
+                {
+                    name: 'update:selectedId',
+                    data: '-',
+                    cb: '-',
+                    desc: '可以使用v-model:selected-id双向绑定数据',
+                },
+                {
+                    name: 'update:expandedId',
+                    data: '-',
+                    cb: '-',
+                    desc: '可以使用v-model:expanded-id双向绑定数据',
+                },
+            ],
+        },
+        slots: {
+            desc: '无',
+            table: [],
+        },
+        refs: {
+            desc: '',
+            table: [
+                {
+                    name: 'checkAll',
+                    data: 'checked:boolean',
+                    cb: '-',
+                    desc: '改变所有节点状态,true时选中所有节点,false时取消所有节点',
+                },
+                {
+                    name: 'checkNode',
+                    data: 'key 节点id,checked 节点状态',
+                    cb: '-',
+                    desc: '注意，如果指定的是父节点，将会选中他的所有节节点，反之取消它所有的子节点',
+                },
+                {
+                    name: 'expandAll',
+                    data: 'checked 指定节点打开还是状态的状态。',
+                    cb: '-',
+                    desc: '展开或者关闭所有父节点状态',
+                },
+                {
+                    name: 'expandNode',
+                    data: 'key 节点id,checked 节点状态',
+                    cb: 'true',
+                    desc: '指定父节点展开状态',
+                },
+                {
+                    name: 'getCheckedNodes',
+                    data: 'strategy = \'all\'',
+                    cb: 'Ref<(string | number)[]>',
+                    desc: '获取选中的节点key数组,all:返回所有选中的节点,parent:父子节点都选中时只返回父节点,children:只返回子节点',
+                },
+                {
+                    name: 'getExpandedNodes',
+                    data: '-',
+                    cb: 'Ref<(string | number)[]>',
+                    desc: '获取当前展开的节点',
+                },
+                {
+                    name: 'getNodePath',
+                    data: 'key 节点id',
+                    cb: '返回节点路径',
+                    desc: '从父节点开始一直到本节点的路径数组。',
+                },
+                {
+                    name: 'showNode',
+                    data: 'key 需要要打开所在路径显示的节点',
+                    cb: '显示某一节点',
+                    desc: '将会打开它所在的所有父节点',
+                }
+            ],
+        },
+    },
+    'virtual-list': {
+        name: 'virtual',
+        title: '虚拟列表 Virtual',
+        desc: `用来展示长列表数据使用，采用虚拟数据展示，只展示视窗内数据，其它不展示。因此上万条列表数据，也可以轻松展示。\n\n已经集成了下拉，触底加载整数事件，封装的非常简单。只要提供load事件即可异步加载数据啦。`,
+        doc: 'https://tmui.design/com/Virtual.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'width',
+                        type: 'number',
+                        default: '`300`',
+                        desc: '宽度，单位rpx',
+                    },
+                    {
+                        name: 'height',
+                        type: 'number',
+                        default: '`500`',
+                        desc: '高度，单位rpx',
+                    },
+                    {
+                        name: 'top-height',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '顶部自定义内容高度，单位rpx',
+                    },
+                    {
+                        name: 'item-height',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '每一项的高度，单位rpx',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: '加载图标的主题色',
+                        minVersion: 'v3.0.7+',
+                    },
+                    {
+                        name: 'data',
+                        type: 'string[]',
+                        default: '`[]`',
+                        desc: '虚拟列表数据',
+                    },
+                    {
+                        name: 'first-load',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '首次渲染时，是否触发load事件。',
+                        minVersion: 'v3.0.7+',
+                    },
+                    {
+                        name: 'load',
+                        type: 'function\\|boolean',
+                        default: '`true`',
+                        desc: '加载数据事件，返回promise或者true，true表示加载完成，false表示加载失败',
+                        minVersion: 'v3.0.7+',
+                    },
+                    {
+                        name: 'scroll-view-in-to',
+                        type: '`\'top\'\\|\'bottom\'\\|\'\'`',
+                        default: '`\'\'`',
+                        desc: `指定当前列表滚动到对应位置，顶或者底部。注意如果当前已经同位置，但加载了数据需要再次底或者顶，应该先设置为'',再设置对应值。`,
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'pull-start',
+                    data: '-',
+                    cb: '-',
+                    desc: '下拉时触发',
+                    minVersion: 'v3.0.7+',
+                },
+                {
+                    name: 'pull-end',
+                    data: '-',
+                    cb: '-',
+                    desc: '触底时触发',
+                    minVersion: 'v3.0.7+',
+                }
+            ],
+        },
+        slots: {
+            desc: '',
+            table: [
+                {
+                    name: 'top',
+                    data: '-',
+                    type: '-',
+                    desc: '顶部自定义内容，高度不超过topHeight 设定高度',
+                },
+                {
+                    name: 'default',
+                    data: 'data',
+                    type: 'Arrray<any>',
+                    desc: '默认插槽，主要',
+                }
+            ],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'waterfall': {
+        name: 'waterfall',
+        title: '瀑布流 Waterfall',
+        desc: '瀑布流又称瀑布流式布局，是比较流行的一种网站页面布局，视觉表现为参差不齐的多栏布局，随着页面滚动条向下滚动。',
+        doc: 'https://tmui.design/com/Waterfall.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'width',
+                        type: 'number',
+                        default: '`750`',
+                        desc: '宽度，单位rpx',
+                    },
+                    {
+                        name: 'gutter',
+                        type: 'number',
+                        default: '`12`',
+                        desc: '元素之间的间距',
+                    },
+                    {
+                        name: 'bottom-height',
+                        type: 'number',
+                        default: '`50`',
+                        desc: '底部自定义内容高度，单位rpx',
+                    },
+                    {
+                        name: 'is-load-placeholder',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '是否开启虚拟加载占位符',
+                    },
+                    {
+                        name: 'is-load-placeholder-transprent',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '虚拟加载占位符背景是否透明',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '无',
+            table: [],
+        },
+        slots: {
+            desc: '注意，它内部只能放置`tm-waterfall-item`，且不能嵌套`tm-waterfall`',
+            table: [],
+        },
+        refs: {
+            desc: '',
+            table: [
+                {
+                    name: 'clear',
+                    data: '-',
+                    cb: '-',
+                    desc: '清空列表,记得清空后,如果要重新赋值一定要在nextTick里面赋值.',
+                }
+            ],
+        },
+    },
+    'waterfall-item': {
+        name: 'waterfall-item',
+        title: '瀑布流项 WaterfallItem',
+        desc: '瀑布流项，只能放置在`tm-waterfall`中使用。',
+        doc: 'https://tmui.design/com/Waterfall.html#%E7%80%91%E5%B8%83%E6%B5%81%E5%AD%90%E7%BB%84%E4%BB%B6-waterfall-item',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'img',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '封面图片，可以为空',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`white`',
+                        desc: '主题颜色',
+                    },
+                    {
+                        name: 'round',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '圆角，0-25，单位rpx',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: `事件返回的数据不一定是准确的高，宽，位置，这些信息是异步的。只有整体项目完全渲染，图片加载完成，点击返回的数据才是准确的。因此 返回的数据没有什么意义仅供参考。 **如果需要点击某一个项目来作逻辑，你在vfor渲染 @click=""时自行传递index，data数据。而不是用我的数据**`,
+            table: [
+                {
+                    name: 'img-click',
+                    data: 'e',
+                    cb: 'items，结构见下方',
+                    desc: '图片被点击',
+                },
+                {
+                    name: 'click',
+                    data: 'e',
+                    cb: 'items，结构见下方',
+                    desc: '项目被点击',
+                }
+            ],
+            data: [
+                {
+                    title: 'items 结构',
+                    table: [
+                        {
+                            name: 'id',
+                            type: 'number\\|string',
+                            default: '`-`',
+                            desc: '唯一标识',
+                        },
+                        {
+                            name: 'width',
+                            type: 'number',
+                            default: '`0`',
+                            desc: '宽度',
+                        },
+                        {
+                            name: 'height',
+                            type: 'number',
+                            default: '`0`',
+                            desc: '高度',
+                        },
+                        {
+                            name: 'img-width',
+                            type: 'number',
+                            default: '`0`',
+                            desc: '图片宽度',
+                        },
+                        {
+                            name: 'img-height',
+                            type: 'number',
+                            default: '`0`',
+                            desc: '图片高度',
+                        },
+                        {
+                            name: 'bottom',
+                            type: 'number',
+                            default: '`0`',
+                            desc: '距离底部距离',
+                        },
+                        {
+                            name: 'index',
+                            type: 'number',
+                            default: '`0`',
+                            desc: '索引',
+                        },
+                        {
+                            name: 'top',
+                            type: 'number',
+                            default: '`0`',
+                            desc: '距离顶部距离',
+                        },
+                        {
+                            name: 'left',
+                            type: 'number',
+                            default: '`0`',
+                            desc: '距离左边距离',
+                        }
+                    ],
+                }
+            ],
+        },
+        slots: {
+            desc: '无',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'cascader': {
+        name: 'cascader',
+        title: '级联器(点选) Cascader',
+        desc: '当一个数据集合有清晰的层级结构时，可通过级联选择器逐级查看并选择。',
+        doc: 'https://tmui.design/com/Cascader.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'follow-theme',
+                        type: 'boolean\\|string',
+                        default: '`true`',
+                        desc: '是否跟随主题',
+                    },
+                    {
+                        name: 'data',
+                        type: 'NodeData[]',
+                        default: '`[]`',
+                        desc: '导入的数据，格式下见下方',
+                    },
+                    {
+                        name: 'default-value',
+                        type: 'string[]',
+                        default: '`[]`',
+                        desc: '默认值',
+                    },
+                    {
+                        name: 'model-value',
+                        type: 'string[]',
+                        default: '`[]`',
+                        desc: '可以使用v-model双向绑定数据',
+                    },
+                    {
+                        name: 'height',
+                        type: 'number',
+                        default: '`650`',
+                        desc: '高度，单位rpx',
+                    },
+                    {
+                        name: 'active-color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: '激活状态下的颜色。',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`white`',
+                        desc: '背景主题',
+                    },
+                    {
+                        name: 'before-tab-click',
+                        type: 'function\\|boolean',
+                        default: '`false`',
+                        desc: '点击tab切换之前执行的勾子函数。可以是promise.返回假时阻止切换。为true时，切换正常。方便动态加载数据。',
+                    },
+                    {
+                        name: 'before-cell-click',
+                        type: 'function(level,childrenIndex,childrenData)\\|boolean',
+                        default: '`false`',
+                        desc: '点击列表中项目时再自动切换到下一项时之前执行的勾子函数，方便动态加载数据。',
+                    },
+                    {
+                        name: 'slot-tab-heigth',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '介于tab和下面选项中间的插槽区域。如果想自定内容在这之间，可以设置高度，将会显示 。',
+                    }
+                ],
+                mark: `**上述beforeCellClick中返回的level参数是一个层级索引数组，可以根据这个值进行定位赋值异步加载数据。**`,
+            },
+            {
+                title: 'NodeData 结构',
+                desc: '级联器数据结构',
+                table: [
+                    {
+                        name: 'id',
+                        type: 'number\\|string',
+                        default: '`-`',
+                        desc: '唯一标识',
+                    },
+                    {
+                        name: 'text',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '标题',
+                    },
+                    {
+                        name: 'disabled',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否禁用',
+                    },
+                    {
+                        name: 'children',
+                        type: 'NodeData[]',
+                        default: '`[]`',
+                        desc: '子集',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'update:modelValue',
+                    data: '-',
+                    cb: 'Array',
+                    desc: '更新选中数据，为v-model',
+                },
+                {
+                    name: 'change',
+                    data: '-',
+                    cb: 'modelValue',
+                    desc: '选中改变时返回当前的数据',
+                },
+                {
+                    name: 'tab-click',
+                    data: '当前点击的tab索引',
+                    cb: '-',
+                    desc: '切换tab事件',
+                },
+                {
+                    name: 'cell-click',
+                    data: '当前点击的cell索引',
+                    cb: '-',
+                    desc: '当点击cell时触发',
+                }
+            ],
+        },
+        slots: {
+            desc: '默认default，介于tab和下面选项之间的区域插槽。',
+            table: [],
+        },
+        refs: {
+            desc: '提供data就是使用data，如果不提供默认的[]空数组，将使用props.data进行刷新同步。',
+            table: [
+                {
+                    name: 'reFresh',
+                    data: 'Array<NodeData>',
+                    cb: '-',
+                    desc: '刷新数据',
+                }
+            ],
+        },
+    },
+    'checkbox': {
+        name: 'checkbox',
+        title: '复选框 Checkbox',
+        desc: '在一组备选项中进行多选。',
+        doc: 'https://tmui.design/com/Checkbox.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'follow-theme',
+                        type: 'boolean\\|string',
+                        default: '`true`',
+                        desc: '是否跟随主题',
+                    },
+                    {
+                        name: 'size',
+                        type: 'number',
+                        default: '`42`',
+                        desc: '大小',
+                    },
+                    {
+                        name: 'transprent',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否透明',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: '主题色名称',
+                    },
+                    {
+                        name: 'round',
+                        type: 'number',
+                        default: '`2`',
+                        desc: '圆角0-25，单位rpx',
+                    },
+                    {
+                        name: 'border',
+                        type: 'number',
+                        default: '`2`',
+                        desc: '边框',
+                    },
+                    {
+                        name: 'value',
+                        type: 'boolean\\|string\\|number',
+                        default: '`true`',
+                        desc: '选项值，选中后返回的值',
+                    },
+                    {
+                        name: 'modelValue',
+                        type: 'boolean\\|string\\|number',
+                        default: '`false`',
+                        desc: 'v-model双向绑定，如果选中后以数组形式给出value值',
+                    },
+                    {
+                        name: 'label',
+                        type: 'string\\|number',
+                        default: '`-`',
+                        desc: '文右边显示的选项文字',
+                    },
+                    {
+                        name: 'default-checked',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '默认是否选中状态。不受上方的modelValue控制，直接选中。',
+                    },
+                    {
+                        name: 'before-checked',
+                        type: 'function\\|boolean\\|string',
+                        default: '`false`',
+                        desc: '选中前的勾子。返回false将阻止选中。也可以返回 Promise异步,函数内已经传递当前的value值，可以直接赋值取得。',
+                    },
+                    {
+                        name: 'disabled',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否禁用',
+                    },
+                    {
+                        name: 'font-size',
+                        type: 'number',
+                        default: '`28`',
+                        desc: '文字大小',
+                    },
+                    {
+                        name: 'indeterminate',
+                        type: 'boolean\\|string',
+                        default: '`false`',
+                        desc: '是否半选状态',
+                    },
+                    {
+                        name: 'close-ani',
+                        type: 'boolean\\|string',
+                        default: '`false`',
+                        desc: '是否关闭动画 ，对于大批量的数据时，建议关闭动画',
+                    },
+                    {
+                        name: 'icon',
+                        type: 'string',
+                        default: '`tmicon-check`',
+                        desc: '自定义选中的图标名称',
+                    },
+                    {
+                        name: 'custom',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否隐藏原本的状态组件',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'update:modelValue',
+                    data: '-',
+                    cb: 'array',
+                    desc: '更新选中数据',
+                },
+                {
+                    name: 'change',
+                    data: '-',
+                    cb: 'modelValue',
+                    desc: '复选框选中改变时返回当前的数据',
+                },
+                {
+                    name: 'click',
+                    data: '-',
+                    cb: '-',
+                    desc: '复选框被点击时执行的函数',
+                }
+            ],
+        },
+        slots: {
+            desc: ` **注意事项**\n\n\t由于uni中的vue3,是经常uni官方修改改.所以在使用带有插槽数据的组件时,如果使用了插槽来自定义内容那么就一定要标准的使用方法, 不可以使用简写,其它其它语法糖.`,
+            table: [
+                {
+                    name: 'default',
+                    data: '-',
+                    type: '-',
+                    desc: '带有数据checked,用于模板内知道当前是否选中.',
+                }
+            ],
+            demoCode: () => {
+                let markdownString = '';
+
+                markdownString += `\`\`\`vue\n`;
+                markdownString += `<!-- 请注意我这里使用了标准的写法v-slot:default="{checked}" -->\n`;
+                markdownString += `<!-- 如果组件没有插槽数据,变成v-slot:default -->\n`;
+                markdownString += `<!-- 那怕你不使用数据,也要这么写.如果不写template v-slot:default="{checked}"> 将会产生兼容性,已知微信小程序会丢失插槽内容 -->\n`;
+                markdownString += `<tm-checkbox>\n`;
+                markdownString += `\t<template v-slot:default="{checked}">\n`;
+                markdownString += `\t\t<view class="flex flex-row">\n`;
+                markdownString += `\t\t\t<tm-text label="我已经阅读并同意"></tm-text>\n`;
+                markdownString += `\t\t\t<view >\n`;
+                markdownString += `\t\t\t\t<tm-text   color="primary" label="《合作协议》"></tm-text>\n`;
+                markdownString += `\t\t\t</view>\n`;
+                markdownString += `\t\t</view>\n`;
+                markdownString += `\t</template>\n`;
+                markdownString += `</tm-checkbox>\n`;
+                markdownString += `\`\`\`\n\n`;
+
+                return markdownString;
+            },
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'checkbox-group': {
+        name: 'checkbox-group',
+        title: '复选框组 CheckboxGroup',
+        desc: '多个复选框组合使用。',
+        doc: 'https://tmui.design/com/Checkbox.html#group%E7%BB%84%E4%BB%B6%E5%8F%82%E6%95%B0',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件不含有公共属性，但是可以使用 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'disabled',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否禁用',
+                    },
+                    {
+                        name: 'max',
+                        type: 'number',
+                        default: '`999`',
+                        desc: '最大选中数量',
+                    },
+                    {
+                        name: 'default-value',
+                        type: 'string[]',
+                        default: '`[]`',
+                        desc: '默认选中数据数组集合',
+                    },
+                    {
+                        name: 'modelValue',
+                        type: 'string[]',
+                        default: '`[]`',
+                        desc: 'v-model双向绑定，如果选中后以数组形式给出value值',
+                    },
+                    {
+                        name: 'direction',
+                        type: 'string',
+                        default: '`row`',
+                        desc: 'row横排，col为竖排，customCol：当你为竖向排列，且文字多行，要自动断行时使用此',
+                    },
+                    {
+                        name: 'align',
+                        type: 'string',
+                        default: '`left`',
+                        desc: 'left居左，right居右，center居中',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'update:modelValue',
+                    data: '-',
+                    cb: 'array',
+                    desc: '更新选中数据',
+                },
+                {
+                    name: 'change',
+                    data: '-',
+                    cb: 'modelValue',
+                    desc: '复选框选中改变时返回当前的数据',
+                }
+            ],
+        },
+        slots: {
+            desc: '无',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'calendar': {
+        name: 'calendar',
+        title: '日历 Calendar',
+        desc: '日历组件，显示日期。',
+        doc: 'https://tmui.design/com/Calendar.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'show',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '显示,双向绑定，同v-model:show',
+                    },
+                    {
+                        name: 'default-value',
+                        type: '`Array<String/Number/Date>`',
+                        default: '`[]`',
+                        desc: '默认选中的日期',
+                    },
+                    {
+                        name: 'modelValue',
+                        type: '`Array<String/Number/Date>`',
+                        default: '`[]`',
+                        desc: 'v-model双向绑定，如果选中后以数组形式给出value值',
+                    },
+                    {
+                        name: 'model-str',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '同v-model:model-str,单向绑定输出展示日期，此字段用来在页面上展示。只向外输出。',
+                    },
+                    {
+                        name: 'model',
+                        type: 'string',
+                        default: '`day`',
+                        desc: '日期模式：day : 单个日期选择模式（可多选，需要设置multiple=true; week :按周选择模式。month :按月选择模式。quarter：按季度选择。year :按年选择模式。rang :按日期范围选择模式。',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: '主题颜色',
+                    },
+                    {
+                        name: 'linear',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '渐变颜色，如果设置了，将会覆盖color',
+                    },
+                    {
+                        name: 'linear-deep',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '渐变颜色，如果设置了，将会覆盖color',
+                    },
+                    {
+                        name: 'start',
+                        type: 'string\\|number\\|date',
+                        default: '`-`',
+                        desc: '有效的可选时间，小于此时间，不允许选中。',
+                    },
+                    {
+                        name: 'end',
+                        type: 'string\\|number\\|date',
+                        default: '`-`',
+                        desc: '有效的可选时间，大于此时间，不允许选中。',
+                    },
+                    {
+                        name: 'disabled-date',
+                        type: '`Array<string/number/date>`',
+                        default: '`[]`',
+                        desc: '被禁用的日期数组。如:["2022-1-1","2022-5-1"]',
+                    },
+                    {
+                        name: 'multiple',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否允许多选。',
+                    },
+                    {
+                        name: 'date-style',
+                        type: '`Array<DateItemStyle>`',
+                        default: '`[]`',
+                        desc: '设定单个日期的样式,格式见下方。',
+                    },
+                    {
+                        name: 'max',
+                        type: 'number',
+                        default: '`999`',
+                        desc: '当multiple=true时，可以选择的最大日期数量。',
+                    },
+                    {
+                        name: 'hide-button',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否隐藏底部按钮',
+                        minVersion: 'v3.0.78+',
+                    },
+                    {
+                        name: 'hide-tool',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否隐藏头部工具栏',
+                        minVersion: 'v3.0.78+',
+                    },
+                    {
+                        name: 'round',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '圆角0-25，单位rpx',
+                        minVersion: 'v3.0.78+',
+                    },
+                    {
+                        name: 'format',
+                        type: 'string',
+                        default: '`YYYY/MM/DD`',
+                        desc: '针对modelStr的时间格式化输出',
+                        minVersion: 'v3.1.0+',
+                    },
+                    {
+                        name: 'confirm-text',
+                        type: 'string',
+                        default: '`确认`',
+                        desc: '按钮文本',
+                    },
+                    {
+                        name: 'text-unit',
+                        type: 'string',
+                        default: '`[\'周次\',\'一\',\'二\',\'三\',\'四\',\'五\',\'六\',\'日\',\'本日\',\'本周\',\'本月\',\'本季度\',\'本年\',\'月\',\'第${x}季度\',\'年\']`',
+                        desc: '提示文本，请按顺序替换，不可少，也不可多。',
+                    }
+                ],
+            },
+            {
+                title: 'DateItemStyle 结构',
+                desc: '日期样式',
+                table: [
+                    {
+                        name: 'date',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '日期',
+                    },
+                    {
+                        name: 'text',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '显示的文字',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '颜色',
+                    },
+                    {
+                        name: 'extra',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '额外的文字',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'update:modelValue',
+                    data: '-',
+                    cb: 'modelValue',
+                    desc: '绑定当前的时间。同v-model',
+                },
+                {
+                    name: 'update:modelStr',
+                    data: '-',
+                    cb: '-',
+                    desc: '更新页面展示日期，v-model:model-str',
+                },
+                {
+                    name: 'change',
+                    data: '`e: Array<string/number>`',
+                    cb: '-',
+                    desc: '当切换年或者月的时候触发。',
+                },
+                {
+                    name: 'confirm',
+                    data: '`e: Array<string/number>`',
+                    cb: '-',
+                    desc: '点击确认按钮时触发',
+                },
+                {
+                    name: 'cancel',
+                    data: '-',
+                    cb: '-',
+                    desc: '点击取消按钮时触发',
+                },
+                {
+                    name: 'update:show',
+                    data: '-',
+                    cb: '-',
+                    desc: '更新显示状态，v-model:show',
+                },
+                {
+                    name: 'click',
+                    data: '`e: Array<string/number>`',
+                    cb: '-',
+                    desc: '日期被选中时触发，注意禁用的日期不会触发 。',
+                },
+                {
+                    name: 'close',
+                    data: '-',
+                    cb: '-',
+                    desc: '关闭时触发',
+                },
+                {
+                    name: 'open',
+                    data: '-',
+                    cb: '-',
+                    desc: '打开时触发',
+                }
+            ],
+        },
+        slots: {
+            desc: '无',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'calendar-view': {
+        name: 'calendar-view',
+        title: '日历视图 CalendarView',
+        desc: '日历组件，显示日期。',
+        doc: 'https://tmui.design/com/Calendar.html#calendarview%E5%8F%82%E6%95%B0',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'default-value',
+                        type: '`Array<String/Number/Date>`',
+                        default: '`[]`',
+                        desc: '默认选中的日期',
+                    },
+                    {
+                        name: 'modelValue',
+                        type: '`Array<String/Number/Date>`',
+                        default: '`[]`',
+                        desc: '绑定对象，v-model:model',
+                    },
+                    {
+                        name: 'model-str',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '单向绑定输出展示日期，此字段用来在页面上展示。只向外输出。v-model:model-str',
+                    },
+                    {
+                        name: 'model',
+                        type: 'string',
+                        default: '`day`',
+                        desc: '日期模式：day : 单个日期选择模式（可多选，需要设置multiple=true; week :按周选择模式。month :按月选择模式。quarter：按季度选择。year :按年选择模式。rang :按日期范围选择模式。',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: '主题颜色',
+                    },
+                    {
+                        name: 'linear',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '渐变颜色，如果设置了，将会覆盖color',
+                    },
+                    {
+                        name: 'linear-deep',
+                        type: 'string',
+                        default: '`light`',
+                        desc: '渐变颜色，如果设置了，将会覆盖color',
+                    },
+                    {
+                        name: 'start',
+                        type: 'string\\|number\\|date',
+                        default: '`-`',
+                        desc: '有效的可选时间，小于此时间，不允许选中。',
+                    },
+                    {
+                        name: 'end',
+                        type: 'string\\|number\\|date',
+                        default: '`-`',
+                        desc: '有效的可选时间，大于此时间，不允许选中。',
+                    },
+                    {
+                        name: 'disabled-date',
+                        type: '`Array<string/number/date>`',
+                        default: '`[]`',
+                        desc: '被禁用的日期数组。如:["2022-1-1","2022-5-1"]',
+                    },
+                    {
+                        name: 'multiple',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否允许多选。',
+                    },
+                    {
+                        name: 'date-style',
+                        type: '`Array<DateItemStyle>`',
+                        default: '`[]`',
+                        desc: '设定单个日期的样式,格式见下方。',
+                    },
+                    {
+                        name: 'max',
+                        type: 'number',
+                        default: '`999`',
+                        desc: '当multiple=true时，可以选择的最大日期数量。',
+                    },
+                    {
+                        name: 'hide-button',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否隐藏底部按钮',
+                        minVersion: 'v3.0.78+',
+                    },
+                    {
+                        name: 'hide-tool',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否隐藏头部工具栏',
+                        minVersion: 'v3.0.78+',
+                    },
+                    {
+                        name: 'format',
+                        type: 'string',
+                        default: '`YYYY/MM/DD`',
+                        desc: '针对modelStr的时间格式化输出',
+                        minVersion: 'v3.1.0+',
+                    },
+                    {
+                        name: 'confirm-text',
+                        type: 'string',
+                        default: '`确认`',
+                        desc: '按钮文本',
+                    },
+                    {
+                        name: 'text-unit',
+                        type: 'string',
+                        default: '`[\'周次\',\'一\',\'二\',\'三\',\'四\',\'五\',\'六\',\'日\',\'本日\',\'本周\',\'本月\',\'本季度\',\'本年\',\'月\',\'第${x}季度\',\'年\']`',
+                        desc: '提示文本，请按顺序替换，不可少，也不可多。',
+                    }
+                ],
+            },
+            {
+                title: 'DateItemStyle 结构',
+                desc: '日期样式',
+                table: [
+                    {
+                        name: 'date',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '日期',
+                    },
+                    {
+                        name: 'text',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '显示的文字',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '颜色',
+                    },
+                    {
+                        name: 'extra',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '额外的文字',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'update:modelValue',
+                    data: '-',
+                    cb: 'modelValue',
+                    desc: '绑定当前的时间。同v-model',
+                },
+                {
+                    name: 'update:modelStr',
+                    data: '-',
+                    cb: '-',
+                    desc: '更新页面展示日期，v-model:model-str',
+                },
+                {
+                    name: 'change',
+                    data: '`e: Array<string/number>`',
+                    cb: '-',
+                    desc: '当切换年或者月的时候触发。',
+                },
+                {
+                    name: 'confirm',
+                    data: '`e: Array<string/number>`',
+                    cb: '-',
+                    desc: '点击确认按钮时触发',
+                },
+                {
+                    name: 'click',
+                    data: '`e: Array<string/number>`',
+                    cb: '-',
+                    desc: '日期被选中时触发，注意禁用的日期不会触发 。',
+                }
+            ],
+        },
+        slots: {
+            desc: '无',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'city-cascader': {
+        name: 'city',
+        title: '城市选择 City',
+        desc: '主要应用于地址城市的快速选择，比较方便直观。\n\n这里面有一个City-cascader为关联式内嵌在页面中显示的选择城市，还有一个是City-picker弹层式地区选择。\n\n两种模式供你使用。',
+        doc: 'https://tmui.design/com/City.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'selected-model',
+                        type: '`\'index\'\\|\'name\'\\|\'id\'`',
+                        default: '`index`',
+                        desc: '赋值方式，id:城市id为返选赋值。name:以城市名称作为返选和赋值。index,默认以索引为返回数据选值',
+                    },
+                    {
+                        name: 'city-level',
+                        type: 'string',
+                        default: '`area`',
+                        desc: '城市选择的级别province:省级别。city:省，市,area:省，市，县/区.',
+                    },
+                    {
+                        name: 'default-value',
+                        type: '`Array<String/Number/Date>`',
+                        default: '`[]`',
+                        desc: '默认选中的日期',
+                    },
+                    {
+                        name: 'modelValue',
+                        type: '`Array<String/Number/Date>`',
+                        default: '`[]`',
+                        desc: '双向绑定输入数据,同v-model',
+                    },
+                    {
+                        name: 'height',
+                        type: 'number',
+                        default: '`650`',
+                        desc: '高度，单位rpx',
+                    },
+                    {
+                        name: 'active-color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: '激活状态下的颜色。',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`white`',
+                        desc: '背景主题',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'update:modelValue',
+                    data: '-',
+                    cb: 'modelValue',
+                    desc: '绑定当前的城市级联数据。,同v-model',
+                }
+            ],
+        },
+        slots: {
+            desc: '默认default',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        },
+    },
+    'city-picker': {
+        name: 'city-picker',
+        title: '城市选择 CityPicker',
+        desc: '主要应用于地址城市的快速选择，比较方便直观。\n\n这里面有一个City-cascader为关联式内嵌在页面中显示的选择城市，还有一个是City-picker弹层式地区选择。\n\n两种模式供你使用。',
+        doc: 'https://tmui.design/com/City.html#city-picker-%E5%8F%82%E6%95%B0',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'selected-model',
+                        type: '`\'index\'\\|\'name\'\\|\'id\'`',
+                        default: '`index`',
+                        desc: '赋值方式，id:城市id为返选赋值。name:以城市名称作为返选和赋值。index,默认以索引为返回数据选值',
+                    },
+                    {
+                        name: 'city',
+                        type: 'array',
+                        default: '`[]`',
+                        desc: '城市数据,默认为空,使用自带城市数据,如果提供将使用自定义城市数据',
+                    },
+                    {
+                        name: 'modelValue',
+                        type: '`Array<String/Number>`',
+                        default: '`[]`',
+                        desc: '双向绑定输入数据,同v-model',
+                    },
+                    {
+                        name: 'model-str',
+                        type: 'string',
+                        default: '`-`',
+                        desc: 'v-model:model-str,单向输出地区名称以/分割。不管selectedModel是以哪种索引选项，此处始终以地区名称输出显示。',
+                    },
+                    {
+                        name: 'show',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: 'v-model:show来双向绑定显示和隐藏选择器。',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: '按钮主题色',
+                    },
+                    {
+                        name: 'btn-round',
+                        type: 'number',
+                        default: '`3`',
+                        desc: '确认按钮的圆角0-25',
+                    },
+                    {
+                        name: 'round',
+                        type: 'number',
+                        default: '`12`',
+                        desc: '弹出层的顶部圆角',
+                    },
+                    {
+                        name: 'disabled',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '当使用插槽占位触发显示时，打开禁用可阻止弹层显示，适合在表单内部使用',
+                    },
+                    {
+                        name: 'duration',
+                        type: 'number',
+                        default: '`300`',
+                        desc: '打开的动画时间',
+                    }
+                ],
+                mark: `**modelValue格式** 双向绑定和默认的defaultValue数据格式是根据你的属性selectedModel 来定义的. 比如你设置selectedModel ="index",那么就是索引模式modelValue="[0,1,2]"这样的索引.
+                比如你设置selectedModel ="name",那么就是索引模式modelValue="["江西","南昌","青山湖区"]"这样的索引.\n\n比如你设置selectedModel ="id",那么就是索引模式modelValue="["110","111","123"]"这样的索引地区id模式.\n\n至于你想要哪种模式,要看你后台交互使用的是哪种.自行选择.`,
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'update:modelValue',
+                    data: '-',
+                    cb: 'modelValue',
+                    desc: '绑定当前的城市级联数据。,同v-model',
+                },
+            ],
+        },
+        slots: {
+            desc: '默认default，可触发弹层的插槽占位内容，比如在里面布局按钮，输入框，点击这块内容可以直接显示弹层。',
+            table: [],
+        },
+        refs: {
+            desc: '',
+            table: [
+                {
+                    name: 'getList',
+                    data: '-',
+                    cb: 'Array',
+                    desc: '获取当前的城市数据',
+                },
+                {
+                    name: 'getIndexs',
+                    data: `list:城市数据，可通过getList返回，也可以自定,model:'name','id','index'可选三种,parentIndex:起始位置默认0，value：[名称，id,索引数组，根据model来]`,
+                    cb: 'Array',
+                    desc: '获取当前的索引数据',
+                },
+                {
+                    name: 'getRouterId',
+                    data: `list:城市数据，可通过getList返回，也可以自定,parentIndex:起始位置默认0，value：[索引组]`,
+                    cb: '返回当前的城市id数组',
+                    desc: '获取当前的城市id数组',
+                }
+            ],
+            demoCode: () => {
+                let markdownString = '';
+
+                markdownString += `\`\`\`ts\n`;
+                markdownString += `const dr = ['江西省','南昌市','东湖区']\n`;
+                markdownString += `let listcity = cityPicker.value?.getList();\n`;
+                markdownString += `//返回索引，通过名称来返回，model=name,index,id等\n`;
+                markdownString += `let indexs = cityPicker.value?.getIndexs(listcity,'name',0,dr);\n`;
+                markdownString += `let ids = cityPicker.value?.getRouterId(listcity,0,indexs);\n`;
+                markdownString += `//返城市id数组\n`;
+                markdownString += `console.log(ids)\n`;
+                markdownString += `\`\`\`\n\n`;
+
+                return markdownString;
+            },
+        },
+    },
+    'form': {
+        name: 'form',
+        title: '表单 Form',
+        desc: '表单包含 输入框, 单选框, 下拉选择, 多选框 等用户输入的组件。 使用表单，您可以收集、验证和提交数据。。',
+        doc: 'https://tmui.design/com/Form.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'modelValue',
+                        type: '`Object`',
+                        default: '`{}`',
+                        desc: '双向绑定输入数据,同v-model',
+                    },
+                    {
+                        name: 'margin',
+                        type: 'number[]',
+                        default: '`[32,24]`',
+                        desc: '外间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'padding',
+                        type: 'number[]',
+                        default: '`[16,0]`',
+                        desc: '内间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'layout',
+                        type: 'string',
+                        default: '`horizontal`',
+                        desc: '布局方式，horizontal水平布局，vertical垂直布局',
+                    },
+                    {
+                        name: 'label-width',
+                        type: 'number',
+                        default: '`160`',
+                        desc: '如果为0表示自动宽度。',
+                    },
+                    {
+                        name: 'label-align',
+                        type: 'string',
+                        default: '`left`',
+                        desc: '标签对齐方式，left居左，right居右，center居中',
+                    },
+                    {
+                        name: 'border',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '显示下划线。',
+                    },
+                    {
+                        name: 'transprent',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否透明背景。',
+                    }
+                ],
+                mark: `**submit,validate校验后都将得到一致的结果参数从3.1.03开始**`,
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'submit',
+                    data: '-',
+                    cb: 'result',
+                    desc: '表单提交时触发，返回当前的表单数据',
+                },
+                {
+                    name: 'reset',
+                    data: '-',
+                    cb: '-',
+                    desc: '表单重置时触发',
+                },
+                {
+                    name: 'validate',
+                    data: '-',
+                    cb: 'result',
+                    desc: '执行表单检验，返回验证结果对象，内有isPass属性表示是否验证通过',
+                },
+                {
+                    name: 'clear-validate',
+                    data: '-',
+                    cb: '-',
+                    desc: '清除表单验证',
+                },
+                {
+                    name: 'update:model-value',
+                    data: '-',
+                    cb: '-',
+                    desc: '更新表单绑定值',
+                }
+            ],
+            mark: () => {
+                let markdownString = '';
+
+                markdownString += `**从3.1.03开始,result结构如下：**\n\n`;
+                markdownString += `\`\`\`ts\n`;
+                markdownString += `{\n`;
+                markdownString += `\tdata: {\n`;
+                markdownString += `\t\t...form的modelValue数据\n`;
+                markdownString += `\t},\n`;
+                markdownString += `\t// 所有与form-item绑定的filed字段校验的结果数组。\n`;
+                markdownString += `\tresult:{\n`;
+                markdownString += `\t\tmessage:string,//校验后的提示文本\n`;
+                markdownString += `\t\tvalidator: boolean,//是否校验通过\n`;
+                markdownString += `\t}[],\n`;
+                markdownString += `\tisPass:boolean //是否校验通过\n`;
+                markdownString += `}\n`;
+                markdownString += `\`\`\`\n\n`;
+
+                return markdownString;
+            },
+        },
+        slots: {
+            desc: '默认default',
+            table: [],
+        },
+        refs: {
+            desc: '',
+            table: [
+                {
+                    name: 'submit',
+                    data: '-',
+                    cb: '-',
+                    desc: '表单提交时触发',
+                },
+                {
+                    name: 'reset',
+                    data: '-',
+                    cb: '-',
+                    desc: '表单重置时触发',
+                },
+                {
+                    name: 'validate',
+                    data: '-',
+                    cb: 'result',
+                    desc: '手动校验表单，返回验证结果对象，内有isPass属性表示是否验证通过',
+                },
+                {
+                    name: 'clearValidate',
+                    data: '-',
+                    cb: '-',
+                    desc: '清除表单验证',
+                },
+                {
+                    name: 'pushKey',
+                    data: 'item:formItem',
+                    cb: '-',
+                    desc: '手动添加一个字段到表单验证',
+                },
+                {
+                    name: 'delKey',
+                    data: 'item:formItem',
+                    cb: '-',
+                    desc: '手动删除一个字段到表单验证',
+                },
+                {
+                    name: 'tmFormComnameId',
+                    data: '-',
+                    cb: '-',
+                    desc: '获取当前表单的唯一id',
+                }
+            ],
+        },
+    },
+    'form-item': {
+        name: 'form-item',
+        title: '表单项 FormItem',
+        desc: '表单项，用于包裹表单组件。必须在form组件内使用。',
+        doc: 'https://tmui.design/com/Form.html#formitem%E5%8F%82%E6%95%B0',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'parent-class',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '表单的父类,可以添加自定类名,影响内部',
+                    },
+                    {
+                        name: 'align',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '这个属性主要是用来让左边标题和右边的表单等内容的对齐方式.正常情况用不到.只有在左边和右边内容高度不一致时,比如右边是多行文本或者上传组件,需要上对齐时能用到.此时可以写上flex-row-top-start',
+                    },
+                    {
+                        name: 'label',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '显示名称',
+                    },
+                    {
+                        name: 'desc',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '底部表单说明文字',
+                    },
+                    {
+                        name: 'margin',
+                        type: 'number[]',
+                        default: '`[12,12]`',
+                        desc: '外间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'padding',
+                        type: 'number[]',
+                        default: '`[0,0]`',
+                        desc: '内间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'field',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '如果在forom绑定的model为深层对象，这里的名称需要如下:比如model = {a:2,b:{c:333}}，如果想绑定c,则field = "b.c"',
+                    },
+                    {
+                        name: 'help',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '表单底部的单项注意说明。',
+                    },
+                    {
+                        name: 'required',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否显示必填的红色星号*',
+                    },
+                    {
+                        name: 'rules',
+                        type: 'RulesItem[]',
+                        default: '`[]`',
+                        desc: '表单验证规则，格式见下方。',
+                        minVersion: 'v3.0.71+',
+                    },
+                    {
+                        name: 'border',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '显示下划线。',
+                    },
+                    {
+                        name: 'show-error',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '校验不通过的情况下，是否显示错误信息提示',
+                        minVersion: 'v3.0.71+',
+                    },
+                    {
+                        name: 'required-title-change-color',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '校验不通过时，是否让标题跟着变化文字颜色，默认是。',
+                        minVersion: 'v3.0.81+',
+                    },
+                    {
+                        name: 'err-height',
+                        type: 'number',
+                        default: '`30`',
+                        desc: '错误提示的高度，单位rpx',
+                        minVersion: 'v3.1.04+',
+                    },
+                    {
+                        name: 'label-width',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '如果为0表示自动宽度。',
+                        minVersion: 'v3.1.07+',
+                    }
+                ],
+                mark: `**在3.0.71版本以前**rules只支持Object,之后支持Array<rulesItem>。为了向下兼容，之后的版本也是支持非数据校验函数。`,
+            },
+            {
+                title: 'RulesItem 结构',
+                desc: '表单验证规则',
+                table: [
+                    {
+                        name: 'validator',
+                        type: 'function\\|boolean',
+                        default: '`-`',
+                        desc: '验证函数，如果是boolean值，直接返回验证结果，如果是函数，返回函数的执行结果',
+                    },
+                    {
+                        name: 'required',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否必填',
+                    },
+                    {
+                        name: 'message',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '提示文本',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '无',
+            table: [],
+        },
+        slots: {
+            desc: '',
+            table: [
+                {
+                    name: 'default',
+                    data: '-',
+                    type: '-',
+                    desc: '表单内容',
+                },
+                {
+                    name: 'label',
+                    data: '-',
+                    type: '-',
+                    desc: '表单标题',
+                },
+                {
+                    name: 'desc',
+                    data: '-',
+                    type: '-',
+                    desc: '表单底部说明',
+                },
+                {
+                    name: 'error',
+                    data: '-',
+                    type: '-',
+                    desc: '表单错误提示，返回数据 data.message,',
+                }
+            ],
+            demoCode: () => {
+                let markdownString = '';
+
+                markdownString += `\`\`\`ts\n`;
+                markdownString += `v-slot:error = "{data}"\n`;
+                markdownString += `data.message读取错误信息\n`;
+                markdownString += `\`\`\`\n\n`;
+
+                return markdownString;
+            },
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        }
+    },
+    'input': {
+        name: 'input',
+        title: '输入框 Input',
+        desc: `通过鼠标或键盘输入字符。\n\n**非常重要**\n\n使用UNI开发的input组件，一定会在微信小程序中的机型（不敢保证 全部），双向绑定数据输入数据时，会出现字符闪烁或者输入过快时，字符丢失。\n解决方案：\n\n1.采用原生的input组件，不要使用本组件。\n\n2.v-model改成v-model.lazy，可以有效改善字符丢失的问题。\n\n以上BUG是uni自带的，我无力解决，只能按照方案解决。另外一提，使用微信原生代码开发的自定Input组件，不会出现双向绑定，输入过快时字符丢失问题，是不是很神奇？`,
+        doc: 'https://tmui.design/com/Input.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'follow-theme',
+                        type: 'boolean\\|string',
+                        default: '`true`',
+                        desc: '跟随系统主题',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`grey-4`',
+                        desc: '颜色',
+                    },
+                    {
+                        name: 'prefix-color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '应用于前缀图标及标题色',
+                    },
+                    {
+                        name: 'suffix-color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '应用于后缀图标及标题色',
+                    },
+                    {
+                        name: 'focus-color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: '获得焦点时的颜色',
+                    },
+                    {
+                        name: 'font-color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '默认使用自动配色',
+                    },
+                    {
+                        name: 'text',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '是否让背景不浅色，flase时color背景不会被浅化',
+                    },
+                    {
+                        name: 'outlined',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否显示边框',
+                    },
+                    {
+                        name: 'border',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '边框宽度',
+                    },
+                    {
+                        name: 'transprent',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否透明',
+                    },
+                    {
+                        name: 'round',
+                        type: 'number',
+                        default: '`3`',
+                        desc: '圆角0-25，单位rpx',
+                    },
+                    {
+                        name: 'shadow',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '阴影0-25，单位rpx',
+                    },
+                    {
+                        name: 'margin',
+                        type: 'number[]',
+                        default: '`[0,0]`',
+                        desc: '外间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'padding',
+                        type: 'number[]',
+                        default: '`[0,0]`',
+                        desc: '内间距[x,y]x=左右，y=上下',
+                    },
+                    {
+                        name: 'height',
+                        type: 'number',
+                        default: '`64`',
+                        desc: '高度，单位rpx',
+                    },
+                    {
+                        name: 'prefix',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '前缀图标',
+                    },
+                    {
+                        name: 'prefix-label',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '前缀文字',
+                    },
+                    {
+                        name: 'suffix',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '后缀图标',
+                    },
+                    {
+                        name: 'suffix-label',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '后缀文字',
+                    },
+                    {
+                        name: 'font-size',
+                        type: 'number',
+                        default: '`30`',
+                        desc: '字体大小，单位rpx',
+                    },
+                    {
+                        name: 'search',
+                        type: 'string',
+                        default: '`tmicon-search`',
+                        desc: '搜索图标',
+                    },
+                    {
+                        name: 'search-label',
+                        type: 'string',
+                        default: '`搜索`',
+                        desc: '搜索文字',
+                    },
+                    {
+                        name: 'search-width',
+                        type: 'number',
+                        default: '`0`',
+                        desc: '搜索按钮的宽度,默认为0根据文字label自动增加宽.',
+                    },
+                    {
+                        name: 'search-font-color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '搜索按钮字体颜色，默认为自动',
+                    },
+                    {
+                        name: 'search-bg-color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '搜索按钮背景颜色，默认为主题色',
+                    },
+                    {
+                        name: 'customicon',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否自定义图标',
+                    },
+                    {
+                        name: 'show-clear',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否显示清除按钮',
+                    },
+                    {
+                        name: 'password',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否密码框',
+                    },
+                    {
+                        name: 'disabled',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否禁用',
+                    },
+                    {
+                        name: 'placeholder',
+                        type: 'string',
+                        default: '`请输入内容`',
+                        desc: '文本框占位文本',
+                    },
+                    {
+                        name: 'placeholder-style',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '占位文本样式',
+                    },
+                    {
+                        name: 'error-label',
+                        type: 'string',
+                        default: '`请输入内容`',
+                        desc: '错误提示文本',
+                    },
+                    {
+                        name: 'align',
+                        type: 'string',
+                        default: '`left`',
+                        desc: '对齐方式，left居左，right居右，center居中',
+                    },
+                    {
+                        name: 'modelValue',
+                        type: 'string\\|number',
+                        default: '`-`',
+                        desc: '绑定值，双向绑定时请使用v-model="xx",或者:value.sync',
+                    },
+                    {
+                        name: 'input-padding',
+                        type: 'number[]',
+                        default: '`[24,0]`',
+                        desc: '输入框边距,注意如果你开启了搜索按钮此属性失效。你可以根据输入框高度来增加高度。',
+                    },
+                    {
+                        name: 'show-char-number',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否显示字符统计,需要绑定value后才会显示。',
+                    },
+                    {
+                        name: 'maxlength',
+                        type: 'number',
+                        default: '`-1`',
+                        desc: '最大输入长度，设置为-1时不限制最大长度',
+                    },
+                    {
+                        name: 'type',
+                        type: 'string',
+                        default: '`text`',
+                        desc: '表单类型:digit/text/number/password/idcard/textarea',
+                    },
+                    {
+                        name: 'cursor-spacing',
+                        type: 'number',
+                        default: '`24`',
+                        desc: '指定光标与键盘的距离，单位rpx',
+                    },
+                    {
+                        name: 'confirm-type',
+                        type: 'string',
+                        default: '`done`',
+                        desc: '键盘右下角确认按钮文字:done/go/next/send/search',
+                    },
+                    {
+                        name: 'confirm-hold',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '点击键盘右下角按钮时是否保持键盘不收起',
+                    },
+                    {
+                        name: 'auto-blur',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '自动失去焦点',
+                    },
+                    {
+                        name: 'hold-keyboard',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否保持键盘弹出状态',
+                    },
+                    {
+                        name: 'adjust-position',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '键盘弹起时，是否自动上推页面',
+                    },
+                    {
+                        name: 'focus',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否聚焦',
+                    },
+                    {
+                        name: 'readonly',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否为只读状态，如果你是支付宝或者钉钉小程序，在使用disabled时，文字变灰，可使用此属性代替。',
+                    },
+                    {
+                        name: 'auto-height',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否自动增高，设置auto-height时，style.height不生效，仅在type=textarea时有效',
+                    },
+                    {
+                        name: 'show-top-error-gap',
+                        type: 'boolean',
+                        default: '`true`',
+                        desc: '用于隐藏顶部的错误间隙，但保留底部，以减少布局间的空隙',
+                    },
+                    {
+                        name: 'clear-and-eye-color',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '清除按钮，显示密码按钮的颜色',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'update:modelValue',
+                    data: '-',
+                    cb: '-',
+                    desc: '更新表单值相当于v-model',
+                },
+                {
+                    name: 'focus',
+                    data: '-',
+                    cb: '-',
+                    desc: '输入框聚焦时触发',
+                },
+                {
+                    name: 'blur',
+                    data: '-',
+                    cb: '-',
+                    desc: '输入框失去焦点时触发',
+                },
+                {
+                    name: 'confirm',
+                    data: '-',
+                    cb: '-',
+                    desc: '点击完成按钮时触发',
+                },
+                {
+                    name: 'keyboardheightchange',
+                    data: '-',
+                    cb: '-',
+                    desc: '键盘高度发生变化的时候触发此事件',
+                },
+                {
+                    name: 'clear',
+                    data: '-',
+                    cb: '-',
+                    desc: '点击清除按钮时触发',
+                },
+                {
+                    name: 'input',
+                    data: '-',
+                    cb: '-',
+                    desc: '键盘输入时触发',
+                },
+                {
+                    name: 'search',
+                    data: '-',
+                    cb: '-',
+                    desc: '点击搜索按钮时触发',
+                },
+                {
+                    name: 'click',
+                    data: '-',
+                    cb: '-',
+                    desc: '点击输入框时触发',
+                }
+            ],
+        },
+        slots: {
+            desc: '无',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        }
+    },
+    'keyboard': {
+        name: 'keyboard',
+        title: '键盘 Keyboard',
+        desc: `键盘组件提供四种模式，可以适应多种输入环境，分别为密码输入，身份证号输入，车牌输入以及常见的数字键盘\n\n因这个组件名字拼错了，现在为了纠正：keyboard和keyboard，两个组件同时存在，可以共用。到了年底错误的组件将删除，请大家做好使用正确组件。`,
+        doc: 'https://tmui.design/com/Keyboard.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'type',
+                        type: 'string',
+                        default: '`number`',
+                        desc: '键盘类型，number数字键盘，idcard身份证号输入，car车牌输入，password密码输入',
+                    },
+                    {
+                        name: 'show',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否显示键盘',
+                    },
+                    {
+                        name: 'modelValue',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '绑定值，双向绑定时请使用v-model="xx",或者:value.sync',
+                    },
+                    {
+                        name: 'default-value',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '默认值',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        default: '`primary`',
+                        desc: '键盘颜色',
+                    },
+                    {
+                        name: 'random',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否随机键盘',
+                    },
+                    {
+                        name: 'decimal',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '是否显示小数点，只在数字键盘有效',
+                    },
+                    {
+                        name: 'z-index',
+                        type: 'number',
+                        default: '`401`',
+                        desc: '层级，nvue无效',
+                    }
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'change',
+                    data: '-',
+                    cb: 'modelValue',
+                    desc: '键盘输入时触发',
+                },
+                {
+                    name: 'confirm',
+                    data: '-',
+                    cb: 'modelValue',
+                    desc: '点击完成按钮时触发，返回最终输入内容，并隐藏键盘',
+                }
+            ],
+        },
+        slots: {
+            desc: '无',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        }
+    },
+    'picker': {
+        name: 'picker',
+        title: '选择器 Picker',
+        desc: `Picker 选择器是一个提供基础单列数据选择以及可扩展为多级联动的选择器组件\n\nPicker与Picker-view两个组件属性相同。除了没有show属性。请自行按照Picker方法使用。`,
+        doc: 'https://tmui.design/com/Picker.html',
+        compalicity: COMPALICITY,
+        propsList: [
+            {
+                title: '参数',
+                desc: `本组件含有公共属性 [公共属性](${LINK_COMPONENT_COMMON_PROPS})`,
+                table: [
+                    {
+                        name: 'modelValue',
+                        type: 'string\\|number',
+                        default: '`-`',
+                        desc: '每一列选中的索引值，双向绑定时请使用v-model="xx",或者:value.sync',
+                    },
+                    {
+                        name: 'model-str',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '这里是单向输出显示的value值，而不是modelValue的index索引值。 这里主要是为了方便表单上页面的显示。如果真要保存到数据库，你应该保存modelValue的值。',
+                    },
+                    {
+                        name: 'default-value',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '默认选中的索引值',
+                    },
+                    {
+                        name: 'selected-model',
+                        type: '`\'index\'\\|\'name\'\\|\'id\'`',
+                        default: '`index`',
+                        desc: '赋值和选值方式，共三种，分别为name:名称模式赋值和选择，id:id模式赋值和选择，index:索引模式赋值和选择',
+                    },
+                    {
+                        name: 'columns',
+                        type: 'array',
+                        default: '`[]`',
+                        desc: '列数组',
+                    },
+                    {
+                        name: 'data-key',
+                        type: 'string',
+                        default: '`text`',
+                        desc: '[3.0.89后建议不使用，请使用mapKey]当columns项目中的data数据为对象时的key取值字段',
+                    },
+                    {
+                        name: 'map-key',
+                        type: 'string',
+                        default: '`text`',
+                        desc: '与dataKey作用相同，从3.0.89开始启用，建议放弃使用dataKey字段。但会兼容dataKey，两者都有效，但微信中只有本字段 有效。',
+                    },
+                    {
+                        name: 'show',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '控制选择器的显示与隐藏',
+                    },
+                    {
+                        name: 'color',
+                        type: 'string',
+                        desc: '`primary`',
+                        default: '选择器的颜色，主要体现在按钮颜色上',
+                    },
+                    {
+                        name: 'btn-round',
+                        type: 'number',
+                        default: '`3`',
+                        desc: '按钮的圆角0-25',
+                    },
+                    {
+                        name: 'round',
+                        type: 'number',
+                        default: '`12`',
+                        desc: '选择器的圆角值',
+                    },
+                    {
+                        name: 'height',
+                        type: 'number',
+                        default: '`700`',
+                        desc: '选择器的高度',
+                    },
+                    {
+                        name: 'linear',
+                        type: 'string',
+                        default: '`-`',
+                        desc: '选择器确认选择按钮的渐变背景方向，可选值有：left:右->左，right:左->右。top:下->上，bottom:上->下',
+                    },
+                    {
+                        name: 'linear-deep',
+                        type: 'string',
+                        default: '`light`',
+                        desc: '选择器确认选择按钮的渐变背景深浅，可选值有：light:浅色，dark:深色',
+                    },
+                    {
+                        name: 'before-change',
+                        type: 'function\\|boolean',
+                        default: '`-`',
+                        desc: '当前改变index项时，改变时执行的函数。如果返回false，将会阻止本次改变,可以是Promise,提供了即将改变的数据和将要改变到目标的数据,结构 为`from:{itemindex,levelIndex,data},to:{itemindex,levelIndex,data}`',
+                    },
+                    {
+                        name: 'disabled',
+                        type: 'boolean',
+                        default: '`false`',
+                        desc: '当使用插槽占位触发显示时，打开禁用可阻止弹层显示，适合在表单内部使用',
+                    },
+                    {
+                        name: 'z-index',
+                        type: 'number\\|string',
+                        default: '`999`',
+                        desc: '层级',
+                    },
+                    {
+                        name: 'duration',
+                        type: 'number',
+                        default: '`300`',
+                        desc: '弹出动画的时间（毫秒）',
+                    },
+                ],
+            }
+        ],
+        events: {
+            desc: '',
+            table: [
+                {
+                    name: 'confirm',
+                    data: '-',
+                    cb: 'modelValue',
+                    desc: '点击完成按钮时触发，返回最终选择的索引值',
+                },
+                {
+                    name: 'cancel',
+                    data: '-',
+                    cb: '-',
+                    desc: '点击取消按钮时触发',
+                },
+                {
+                    name: 'open',
+                    data: '-',
+                    cb: '-',
+                    desc: '选择器弹出层打开的触发事件',
+                },
+                {
+                    name: 'close',
+                    data: '-',
+                    cb: '-',
+                    desc: '选择器弹出层关闭的触发事件',
+                },
+            ],
+        },
+        slots: {
+            desc: '默认default，可触发弹层的插槽占位内容，比如在里面布局按钮，输入框，点击这块内容可以直接显示弹层。',
+            table: [],
+        },
+        refs: {
+            desc: '无',
+            table: [],
+        }
+    },
 };

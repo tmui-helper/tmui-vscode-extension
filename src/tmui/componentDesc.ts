@@ -10,6 +10,7 @@ interface Props {
     title?: string;
     desc: string;
     table: PropsTbale[];
+    mark?: string;
 };
 
 interface EventsTable {
@@ -17,11 +18,17 @@ interface EventsTable {
     data: string;
     cb: string;
     desc: string;
+    minVersion?: string;
 };
 
 interface Events {
     desc: string;
     table: EventsTable[];
+    data?: {
+        title: string;
+        table: PropsTbale[];
+    }[];
+    mark?: () => string;
 };
 
 interface SlotsTable {
@@ -35,6 +42,7 @@ interface SlotsTable {
 interface Slots {
     desc: string;
     table: SlotsTable[];
+    demoCode?: () => string;
 };
 
 interface RefsTable {

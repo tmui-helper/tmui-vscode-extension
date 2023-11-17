@@ -75,6 +75,11 @@ export const renderComponentMd = async (componentName: string) => {
 				const minVersion = item.minVersion ? `\`${item.minVersion}\`` : '';
 				markdownString += `|${item.name}${minVersion}|${item.type}|\`${item.default}\`|${item.desc}|\n`;
 			});
+			// 判断是否有属性的标注说明
+			if (item.mark) {
+				markdownString += `\n`;
+				markdownString += `${item.mark}\n\n`;
+			}
 		});
 	}
 	// 组装组件的事件列表
@@ -86,7 +91,28 @@ export const renderComponentMd = async (componentName: string) => {
 		markdownString += `|事件名|参数|返回数据|描述|\n`;
 		markdownString += `|---|---|---|---|\n`;
 		events.forEach((item) => {
-			markdownString += `|${item.name}|${item.data}|${item.cb}|${item.desc}|\n`;
+			// 判断属性是否有版本要求
+			const minVersion = item.minVersion ? `\`${item.minVersion}\`` : '';
+			markdownString += `|${item.name}${minVersion}|${item.data}|${item.cb}|${item.desc}|\n`;
+		});
+		markdownString += `\n`;
+	}
+	// 判断是否有事件的标注说明
+	if (doc.events.mark) {
+		markdownString += `\n`;
+		markdownString += `${doc.events.mark()}\n\n`;
+	}
+	// 判断是否有事件的参数说明
+	if (doc.events.data?.length) {
+		doc.events.data.forEach((item) => {
+			markdownString += `#### ${item.title}\n\n`;
+			markdownString += `|参数名|类型|默认值|说明|\n`;
+			markdownString += `|---|---|---|---|\n`;
+			item.table.forEach((item) => {
+				// 判断属性是否有版本要求
+				const minVersion = item.minVersion ? `\`${item.minVersion}\`` : '';
+				markdownString += `|${item.name}${minVersion}|${item.type}|\`${item.default}\`|${item.desc}|\n`;
+			});
 		});
 		markdownString += `\n`;
 	}
@@ -102,6 +128,18 @@ export const renderComponentMd = async (componentName: string) => {
 			markdownString += `|${item.name}|${item.data}|${item.type}|${item.desc}|\n`;
 		});
 		markdownString += `\n`;
+	}
+	if (doc.slots.demoCode && doc.slots.demoCode()?.length) {
+		// 示例代码
+		markdownString += `#### slot插槽示例代码\n\n`;
+		// 这里不需要折叠，测试发现折叠功能无故失效
+		// 增加markdown的代码块折叠/展开功能
+		// markdownString += `<details>\n`;
+		// markdownString += `\t<summary>点击折叠/展开</summary>\n\n`;
+		// markdownString += `\n`;
+		markdownString += doc.slots.demoCode();
+		// markdownString += `\n`;
+		// markdownString += `</details>\n\n`;
 	}
 	// 组装组件的ref列表
 	markdownString += `### Refs\n\n`;
